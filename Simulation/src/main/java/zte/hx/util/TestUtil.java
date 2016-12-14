@@ -82,7 +82,7 @@ public class TestUtil {
 	}
 
 	public static <T> void print(List<T> list) {
-		print(list, 10);
+		print(list, 5);
 	}
 
 	public static void printFirst(double[] d, int count) {

@@ -10,19 +10,13 @@ public class Line {
 		this.end = end;
 	}
 
-	void push(double input) {
-		double startOut;
+	void push(int i, double k) {
 		if (start instanceof Source) {
-			startOut = ((Source) start).next();
-		} else if (start instanceof ControlBlock) {
-			ControlBlock cb = (ControlBlock) start;
-			cb.next(input);
-			startOut = cb.getLastOut();
-		} else {
-			throw new IllegalStateException("check left block");
+			((Source) start).next(i, k);
 		}
-		ControlBlock right = (ControlBlock) end;
-		right.next(startOut);
+		if (end instanceof ControlBlock) {
+			((ControlBlock) end).next(start.getOutput());
+		}
 	}
 
 	boolean isPreLine(Line line) {

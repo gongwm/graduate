@@ -8,7 +8,7 @@ public class Inertia implements ControlBlock {
 	double k = 1.0;
 	double t = 0.1;
 
-	private double lastOut = 0.0;
+	private double output = 0.0;
 
 	private double c1;
 	private double c2;
@@ -20,11 +20,10 @@ public class Inertia implements ControlBlock {
 	}
 
 	public void next(double input) {
-		double out = c1 * lastOut + c2 * input;
-		lastOut = out;
+		output = c1 * output + c2 * input;
 	}
 
-	public double getLastOut() {
-		return lastOut;
+	public double getOutput() {
+		return output;
 	}
 }

@@ -10,7 +10,7 @@ public class Config {
 	double T = 0.01;
 
 	double t = 0.0;
-	double tt = 2;
+	double tt = 10;
 
 	int n = (int) (tt / T);
 	int i = 0;
