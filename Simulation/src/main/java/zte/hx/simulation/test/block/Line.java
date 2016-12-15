@@ -13,8 +13,7 @@ public class Line {
 	void push(int i, double k) {
 		if (start instanceof Source) {
 			((Source) start).next(i, k);
-		}
-		if (end instanceof ControlBlock) {
+		} else if (end instanceof ControlBlock) {
 			((ControlBlock) end).next(start.getOutput());
 		}
 	}
