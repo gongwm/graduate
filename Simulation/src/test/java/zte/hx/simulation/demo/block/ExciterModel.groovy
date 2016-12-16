@@ -1,5 +1,7 @@
 package zte.hx.simulation.demo.block
 
+import groovy.json.JsonOutput
+
 public class ExciterModel{
 	static def exciter=[
 		config:[
@@ -17,7 +19,8 @@ public class ExciterModel{
 			b3:[type:'inertia',k:-20,t:-10],
 			b4:[type:'amplifier',k:0.01],
 			b5:[type:'inertia',k:1,t:1],
-			b6:[type:'inertia',k:0.05,t:0.05]
+			b6:[type:'inertia',k:0.05,t:0.05],
+			b7:[type:'scope']
 		],
 		lines:[
 			l1:['s1', 'j1'],
@@ -29,6 +32,11 @@ public class ExciterModel{
 			l7:['b4', 'j2'],
 			l8:['b3', 'b5'],
 			l9:['b5', 'b6'],
-			l10:['b6', 'j1']]
+			l10:['b6', 'j1'],
+			l11:['b5', 'b7']]
 	]
+	
+	static def main(args){
+		println JsonOutput.toJson(exciter)
+	}
 }

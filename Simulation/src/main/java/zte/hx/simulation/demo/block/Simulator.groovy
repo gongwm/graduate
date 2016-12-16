@@ -8,52 +8,22 @@ class Simulator {
 	Map<String,Block> components=[:]
 	Map<String,Line> lines=[:]
 
-	def out=[]
-
-	static def main(args){
-		Simulator sim=new Simulator()
-		sim.initSystem(ExciterModel.exciter)
-
-		TestUtil.timeIt{ sim.simulate() }
-
-		TestUtil.printRange(sim.out,20)
-		def time=sim.config.time
-		def out=sim.out
-
-		println time.size()
-		println out.size()
-
-		PrintUtil.print{pw->
-			time.eachWithIndex {v,k->
-				pw.println("${time[k]} ${out[k]}")
-			}
-		}
-	}
-
-	def simulate(){
-		out.add(components.b5.getOutput())
-		config.iterate{i,k->
-			lines.each{
-				it.value.push(i,k)
-			}
-			out.add(components.b5.getOutput())
-		}
-	}
-
-	private def checkValidation(){
-	}
-
-	private def adjustLine(){
-	}
-
 	private initSystem(Map model){
+		config=new Config()
+		config.config(model.config.T,model.config.t,model.config.tt)
+		
 		model.components.each{
 			components[it.key]=BlockFactory.create(it.value)
 		}
+		
 		model.lines.each{
-			lines[it.key]=new Line(
-					components[it.value[0]],
-					components[it.value[1]])
+			def start=components[it.value[0]]
+			def end=components[it.value[1]]
+			def line=new Line(start,end)
+			lines[it.key]=line
+			if(end instanceof Scope){
+				line.push(0,config.T)
+			}
 		}
 		model.components.each{
 			if(it.value.type=='joint'){
@@ -64,14 +34,25 @@ class Simulator {
 			}
 		}
 
-		config=new Config()
-		config.config(model.config.T,model.config.t,model.config.tt)
-
 		components.each{
 			if(it instanceof Inertia){
 				it.setConfig(config)
 			}
 		}
+	}
+
+	def simulate(){
+		config.iterate{i,k->
+			lines.each{
+				it.value.push(i,k)
+			}
+		}
+	}
+
+	private def checkValidation(){
+	}
+
+	private def adjustLine(){
 	}
 }
 
@@ -84,6 +65,7 @@ class BlockFactory{
 			case 'inertia':b=new Inertia().config(info.k,info.t);break;
 			case 'amplifier':b=new Amplifier(info.k);break;
 			case 'limiter':b=new Limiter(info.upper,info.lower);break;
+			case 'scope':b=new Scope();break;
 			default: throw new IllegalArgumentException('no such model');break;
 		}
 		return b;

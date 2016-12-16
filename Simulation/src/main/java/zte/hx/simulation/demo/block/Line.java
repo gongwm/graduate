@@ -10,9 +10,9 @@ public class Line {
 		this.end = end;
 	}
 
-	void push(int i, double k) {
+	void push(int k, double T) {
 		if (start instanceof Source) {
-			((Source) start).next(i, k);
+			((Source) start).next(k, T);
 		} else if (end instanceof ControlBlock) {
 			((ControlBlock) end).next(start.getOutput());
 		}
