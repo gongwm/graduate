@@ -1,6 +1,6 @@
 package zte.hx.service.test;
 
-import zte.hx.simulation.test.PidTestDemo;
+import zte.hx.simulation.demo.PidTestDemo;
 import zte.hx.tool.ui.highcharts.LineData;
 import zte.hx.tool.ui.highcharts.LineDataBuilder;
 

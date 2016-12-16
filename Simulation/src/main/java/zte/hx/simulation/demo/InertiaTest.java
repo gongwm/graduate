@@ -1,4 +1,4 @@
-package zte.hx.simulation.test;
+package zte.hx.simulation.demo;
 
 import java.io.File;
 import java.io.PrintWriter;

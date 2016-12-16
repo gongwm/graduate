@@ -1,33 +1,33 @@
-package zte.hx.simulation.test;
+package zte.hx.simulation.demo;
 
-import zte.hx.util.TestUtil;
+public class PidTestDemo {
+	private double[] pOut;
+	private double[] iOut;
+	private double[] dOut;
 
-public class PidTest {
-	public static void main(String[] args) {
-		TestUtil.timeIt(() -> test());
-	}
+	private double[] time;
 
-	private static void test() {
+	public void simulate() {
 		double dt = 0.01;// time interval
 
-		double totalTime = 600;// s
+		double totalTime = 60;// s
 
 		int n = (int) (totalTime / dt);
 
-		double[] time = new double[n];// time
+		time = new double[n];// time
 		double[] error = new double[n];// error
 		for (int i = 0; i < n; ++i) {
 			time[i] = i * dt;
 			error[i] = 1.0;
 		}
 
-		double[] pOut = new double[n];// p model
+		pOut = new double[n];// p model
 		double kp = 1.0;
 
-		double[] iOut = new double[n];// i model
+		iOut = new double[n];// i model
 		double ki = 1.0;
 
-		double[] dOut = new double[n];// d model
+		dOut = new double[n];// d model
 		double kd = 1.0;
 		double t1d = 1.0;
 
@@ -45,14 +45,26 @@ public class PidTest {
 			double e1 = error[k - 1];// last error
 			double e2 = error[k - 2];
 
-			pOut[k] = pOut[k - 1] + kp * (e - e1);
-			iOut[k] = iOut[k - 1] + ki * dt * e;
 			dOut[k] = t1d / (t1d + dt) * dOut[k - 1]
 					+ 1 / (t1d + dt) * kd * (e - 2 * e1 + e2);
+			pOut[k] = pOut[k - 1] + kp * (e - e1);
+			iOut[k] = iOut[k - 1] + ki * dt * e;
 		}
+	}
 
-		// TestUtil.printRange(pOut, 10);
-		// TestUtil.printRange(iOut, 10);
-		// TestUtil.printRange(dOut, 10);
+	public double[] getpOut() {
+		return pOut;
+	}
+
+	public double[] getiOut() {
+		return iOut;
+	}
+
+	public double[] getdOut() {
+		return dOut;
+	}
+
+	public double[] getTime() {
+		return time;
 	}
 }
