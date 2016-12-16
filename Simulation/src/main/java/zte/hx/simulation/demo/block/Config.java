@@ -1,4 +1,4 @@
-package zte.hx.simulation.test.block;
+package zte.hx.simulation.demo.block;
 
 /**
  * fixed time step config.

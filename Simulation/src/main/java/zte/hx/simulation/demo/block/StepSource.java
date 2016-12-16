@@ -1,4 +1,4 @@
-package zte.hx.simulation.test.block;
+package zte.hx.simulation.demo.block;
 
 public class StepSource implements Source {
 	public double getOutput() {

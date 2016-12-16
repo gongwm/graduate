@@ -1,4 +1,4 @@
-package zte.hx.simulation.test.block;
+package zte.hx.simulation.demo.block;
 
 public interface LinearBlock extends ControlBlock {
 }

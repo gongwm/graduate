@@ -1,4 +1,4 @@
-package zte.hx.simulation.test.block;
+package zte.hx.simulation.demo.block;
 
 public class Amplifier implements LinearBlock {
 	double k;

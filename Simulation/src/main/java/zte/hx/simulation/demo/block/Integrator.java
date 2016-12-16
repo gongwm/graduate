@@ -1,4 +1,4 @@
-package zte.hx.simulation.test.block;
+package zte.hx.simulation.demo.block;
 
 public class Integrator implements ControlBlock {
 	Config config = Config.DEFAULT_CONFIG;

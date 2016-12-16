@@ -1,4 +1,4 @@
-package zte.hx.simulation.test.block;
+package zte.hx.simulation.demo.block;
 
 public class Insensitor implements NonlinearBlock {
 	private double c;

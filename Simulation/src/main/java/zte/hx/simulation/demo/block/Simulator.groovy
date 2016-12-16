@@ -1,4 +1,4 @@
-package zte.hx.simulation.test.block
+package zte.hx.simulation.demo.block
 
 import zte.hx.simulation.util.PrintUtil
 import zte.hx.util.TestUtil
@@ -29,7 +29,7 @@ class Simulator {
 
 	def simulate(Map model){
 		initSystem(model)
-		
+
 		out.add(components.b5.getOutput())
 		config.iterate{i,k->
 			lines.each{
@@ -38,13 +38,11 @@ class Simulator {
 			out.add(components.b5.getOutput())
 		}
 	}
-	
+
 	private def checkValidation(){
-		
 	}
-	
+
 	private def adjustLine(){
-		
 	}
 
 	private initSystem(Map model){

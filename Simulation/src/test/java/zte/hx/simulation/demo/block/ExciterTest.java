@@ -1,17 +1,17 @@
-package zte.hx.simulation.test.block;
+package zte.hx.simulation.demo.block;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import zte.hx.simulation.test.block.Amplifier;
-import zte.hx.simulation.test.block.Block;
-import zte.hx.simulation.test.block.Config;
-import zte.hx.simulation.test.block.Inertia;
-import zte.hx.simulation.test.block.Joint;
-import zte.hx.simulation.test.block.Limiter;
-import zte.hx.simulation.test.block.Line;
-import zte.hx.simulation.test.block.Source;
-import zte.hx.simulation.test.block.StepSource;
+import zte.hx.simulation.demo.block.Amplifier;
+import zte.hx.simulation.demo.block.Block;
+import zte.hx.simulation.demo.block.Config;
+import zte.hx.simulation.demo.block.Inertia;
+import zte.hx.simulation.demo.block.Joint;
+import zte.hx.simulation.demo.block.Limiter;
+import zte.hx.simulation.demo.block.Line;
+import zte.hx.simulation.demo.block.Source;
+import zte.hx.simulation.demo.block.StepSource;
 import zte.hx.simulation.util.PrintUtil;
 import zte.hx.util.TestUtil;
 
