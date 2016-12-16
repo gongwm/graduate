@@ -1,8 +1,6 @@
 package zte.hx.simulation.demo.block
 
-import groovy.json.JsonOutput
-
-class ExciterModel{
+public class ExciterModel{
 	static def exciter=[
 		config:[
 			type:'fixed',

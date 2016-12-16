@@ -12,7 +12,10 @@ class Simulator {
 
 	static def main(args){
 		Simulator sim=new Simulator()
-		sim.simulate(ExciterModel.exciter)
+		sim.initSystem(ExciterModel.exciter)
+
+		TestUtil.timeIt{ sim.simulate() }
+
 		TestUtil.printRange(sim.out,20)
 		def time=sim.config.time
 		def out=sim.out
@@ -27,9 +30,7 @@ class Simulator {
 		}
 	}
 
-	def simulate(Map model){
-		initSystem(model)
-
+	def simulate(){
 		out.add(components.b5.getOutput())
 		config.iterate{i,k->
 			lines.each{
