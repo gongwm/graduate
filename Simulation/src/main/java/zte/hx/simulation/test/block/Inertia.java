@@ -3,7 +3,7 @@ package zte.hx.simulation.test.block;
 import static java.lang.Math.pow;
 
 public class Inertia implements LinearBlock {
-	Config config = Config.DEFAULT_CONFIG;
+	private Config config = Config.DEFAULT_CONFIG;
 
 	double k = 1.0;
 	double t = 0.1;
@@ -20,6 +20,11 @@ public class Inertia implements LinearBlock {
 	private void initRatio() {
 		c1 = pow(e, -config.T / t);
 		c2 = k * (1 - pow(e, -config.T / t));
+	}
+	
+	void setConfig(Config config){
+		this.config=config;
+		initRatio();
 	}
 
 	Block config(double... ds) {

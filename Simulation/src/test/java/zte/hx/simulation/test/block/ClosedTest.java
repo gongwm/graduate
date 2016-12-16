@@ -6,7 +6,15 @@ import java.util.List;
 import zte.hx.simulation.util.PrintUtil;
 import zte.hx.util.TestUtil;
 
-public class Simulation {
+/**
+ * step->joint->inertia->integrator-->
+ *         ^                        |
+ *         |________________________|
+ *         
+ * @author hx
+ *
+ */
+public class ClosedTest {
 	public static void main(String[] args) {
 		Config config = Config.DEFAULT_CONFIG;
 

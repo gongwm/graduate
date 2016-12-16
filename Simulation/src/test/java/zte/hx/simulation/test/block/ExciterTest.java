@@ -3,6 +3,15 @@ package zte.hx.simulation.test.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import zte.hx.simulation.test.block.Amplifier;
+import zte.hx.simulation.test.block.Block;
+import zte.hx.simulation.test.block.Config;
+import zte.hx.simulation.test.block.Inertia;
+import zte.hx.simulation.test.block.Joint;
+import zte.hx.simulation.test.block.Limiter;
+import zte.hx.simulation.test.block.Line;
+import zte.hx.simulation.test.block.Source;
+import zte.hx.simulation.test.block.StepSource;
 import zte.hx.simulation.util.PrintUtil;
 import zte.hx.util.TestUtil;
 
@@ -44,6 +53,7 @@ public class ExciterTest {
 		j2.addLine(l7, Joint.SUB);
 
 		List<Double> out = new ArrayList<>();
+		out.add(b5.getOutput());
 		TestUtil.timeIt(() -> {
 			config.iterate((i, k) -> {
 				l1.push(i, k);
