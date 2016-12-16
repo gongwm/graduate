@@ -7,6 +7,8 @@ package zte.hx.simulation.test.block;
  *
  */
 public class Config {
+	static final Config DEFAULT_CONFIG = new Config();
+
 	double T = 0.01;
 
 	double t = 0.0;

@@ -1,15 +1,14 @@
 package zte.hx.simulation.test.block;
 
 public class Integrator implements ControlBlock {
-	private Config config;
+	Config config = Config.DEFAULT_CONFIG;
 	private double k = 2;
 
 	private double output = 0.0;
 
 	private double c;
 
-	Integrator(Config config) {
-		this.config = config;
+	Integrator() {
 		c = k * this.config.T;
 	}
 

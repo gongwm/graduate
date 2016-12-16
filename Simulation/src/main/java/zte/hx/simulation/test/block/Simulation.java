@@ -8,12 +8,12 @@ import zte.hx.util.TestUtil;
 
 public class Simulation {
 	public static void main(String[] args) {
-		Config config = new Config();
+		Config config = Config.DEFAULT_CONFIG;
 
 		Source step = new StepSource();
 		Joint joint = new Joint();
-		ControlBlock inertia = new Inertia(config);
-		ControlBlock integrator = new Integrator(config);
+		ControlBlock inertia = new Inertia();
+		ControlBlock integrator = new Integrator();
 
 		Line line1 = new Line(step, joint);
 		Line line2 = new Line(joint, inertia);

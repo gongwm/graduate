@@ -4,7 +4,7 @@ public class Amplifier implements LinearBlock {
 	double k;
 
 	private double output;
-
+	
 	Amplifier(double k) {
 		this.k = k;
 	}

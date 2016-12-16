@@ -18,13 +18,13 @@ public class ExciterTest {
 
 		Source stepSource = new StepSource();
 		Joint j1 = new Joint();
-		Block b1 = new Inertia(config).config(40, 0.1);
+		Block b1 = new Inertia().config(40, 0.1);
 		Block b2 = new Limiter(30);
 		Joint j2 = new Joint();
-		Block b3 = new Inertia(config).config(-20, -10);
+		Block b3 = new Inertia().config(-20, -10);
 		Block b4 = new Amplifier(0.01);
-		Block b5 = new Inertia(config).config(1, 1);
-		Block b6 = new Inertia(config).config(0.05, 0.05);
+		Block b5 = new Inertia().config(1, 1);
+		Block b6 = new Inertia().config(0.05, 0.05);
 
 		Line l1 = new Line(stepSource, j1);
 		Line l2 = new Line(j1, b1);
