@@ -8,7 +8,7 @@ class Simulator {
 	Map<String,Block> components=[:]
 	Map<String,Line> lines=[:]
 
-	private initSystem(Map model){
+	def initSystem(Map model){
 		config=new Config()
 		config.config(model.config.T,model.config.t,model.config.tt)
 		

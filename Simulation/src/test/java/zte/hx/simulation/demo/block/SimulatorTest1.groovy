@@ -11,7 +11,7 @@ class SimulatorTest1 {
 		sim.initSystem(ExciterModel.exciter)
 		TestUtil.timeIt{ sim.simulate() }
 
-		TestUtil.print(sim.components.b7.data)
+		TestUtil.printRange(sim.components.b7.data,20)
 		def time=sim.config.time
 		def out=sim.components.b7.data
 
