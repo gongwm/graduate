@@ -11,11 +11,11 @@ class Simulator {
 	def initSystem(Map model){
 		config=new Config()
 		config.config(model.config.T,model.config.t,model.config.tt)
-		
+
 		model.components.each{
 			components[it.key]=BlockFactory.create(it.value)
 		}
-		
+
 		model.lines.each{
 			def start=components[it.value[0]]
 			def end=components[it.value[1]]

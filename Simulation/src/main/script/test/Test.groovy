@@ -1,5 +1,3 @@
-package test
-
 import groovy.json.JsonOutput
 
 class A{

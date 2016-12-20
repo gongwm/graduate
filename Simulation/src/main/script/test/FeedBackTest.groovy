@@ -1,5 +1,3 @@
-package test
-
 def dt=0.01
 
 def totalTime=60//s

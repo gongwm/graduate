@@ -1,4 +1,3 @@
-package test
 import groovy.transform.TupleConstructor
 
 interface Block{
