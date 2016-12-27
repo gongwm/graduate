@@ -4,7 +4,7 @@ class PrintUtil {
 	static def path='C:\\Users\\Administrator.WIN7U-20131225W\\Desktop\\out.txt'
 	//static def path='C:\\Users\\Administrator\\Desktop\\out.txt'
 
-	private static def printTo(path,Printer p){
+	static def printTo(path,Printer p){
 		def pw=new PrintWriter(path)
 		p.print(pw)
 		pw.flush()

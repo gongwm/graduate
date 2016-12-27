@@ -26,7 +26,7 @@ public class TestUtil {
 				System.out.print(t + " ");
 			}
 			++j;
-			if (j >= 20) {
+			if (j >= 5) {
 				System.out.println("");
 				j = 0;
 			}
