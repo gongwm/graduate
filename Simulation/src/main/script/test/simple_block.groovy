@@ -1,26 +1,20 @@
-import groovy.transform.TupleConstructor
-
-interface Block{
-	double e=Math.E
-}
-
 class Config{
 	double T=0.01
-	double totalTime=5
+	double totalTime=10
 
 	int n=totalTime/T
 	double currentTime=0.0
 	int i=0
 
-	void nextStep(){
+	void next(){
 		++i
 		currentTime+=T
 	}
 }
 
-class Inertia implements Block{
-	//inertia object model
-	Config config=new Config()
+class Inertia{
+	Config config
+	def e=Math.E
 
 	double k=1
 	double t=0.1
@@ -30,7 +24,7 @@ class Inertia implements Block{
 	double c1
 	double c2
 
-	Inertia(){
+	def init(){
 		c1=e**(-config.T/t)
 		c2=k*(1-e**(-config.T/t))
 	}
@@ -41,13 +35,16 @@ class Inertia implements Block{
 	}
 }
 
-@TupleConstructor
 class Line{
-	Block start
-	Block end
+	def start
+	def end
+	
+	void next(){
+		end.next(start.next())
+	}
 }
 
-class StepSource implements Block{//simple step source
+class StepSource{ // simple step source
 	double next(){
 		return 1.0
 	}
@@ -55,25 +52,28 @@ class StepSource implements Block{//simple step source
 
 class Simulation{
 	def simulate(){
-		def config=new Config()
+		def config=new Config() //仿真配置
 
-		def source=new StepSource()
+		def source=new StepSource() //元件设置
+
 		def inertia=new Inertia()
-		def line1=new Line(source,inertia)
+		inertia.config=config
+		inertia.init()
+
+		def line1=new Line() // 连接设置
+		line1.start=source
+		line1.end=inertia
 
 		def y=[]
 		y[0]=inertia.out
 
 		(1..config.n).each{
-			y+=line1.end.next(line1.start.next())
+			config.next()
+			line1.next()
+			y[it]=inertia.out
 		}
 		return y
 	}
-}
-
-//joint point
-class JointPoint{
-
 }
 
 def simu=new Simulation()
