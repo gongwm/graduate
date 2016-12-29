@@ -5,12 +5,11 @@ interface Block{
 }
 
 class Config{
-	//basic config.
 	double T=0.01
-
-	double currentTime=0.0
 	double totalTime=5
+
 	int n=totalTime/T
+	double currentTime=0.0
 	int i=0
 
 	void nextStep(){
@@ -19,13 +18,14 @@ class Config{
 	}
 }
 
-class Inertia implements Block{//inertia object model
+class Inertia implements Block{
+	//inertia object model
 	Config config=new Config()
 
 	double k=1
 	double t=0.1
 
-	double out=0.0
+	double out=0.0 //initial value
 
 	double c1
 	double c2
@@ -39,6 +39,12 @@ class Inertia implements Block{//inertia object model
 		out=c1*out+c2*input
 		return out
 	}
+}
+
+@TupleConstructor
+class Line{
+	Block start
+	Block end
 }
 
 class StepSource implements Block{//simple step source
@@ -63,12 +69,6 @@ class Simulation{
 		}
 		return y
 	}
-}
-
-@TupleConstructor
-class Line{
-	Block start
-	Block end
 }
 
 //joint point
