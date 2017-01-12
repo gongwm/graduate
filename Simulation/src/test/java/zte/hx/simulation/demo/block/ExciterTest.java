@@ -1,6 +1,7 @@
 package zte.hx.simulation.demo.block;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import zte.hx.simulation.util.PrintUtil;
@@ -39,24 +40,16 @@ public class ExciterTest {
 
 		List<Double> out = new ArrayList<>();
 		out.add(b5.getOutput());
+
+		List<Line> lines = Arrays.asList(l1, l2, l3, l4, l5, l6, l7, l8, l9,
+				l10);
 		TestUtil.timeIt(() -> {
 			config.iterate((i, k) -> {
-				l1.push(i, k);
-				l2.push(i, k);
-				l3.push(i, k);
-				l4.push(i, k);
-				l5.push(i, k);
-				l6.push(i, k);
-				l7.push(i, k);
-				l8.push(i, k);
-				l9.push(i, k);
-				l10.push(i, k);
+				lines.forEach(l -> l.push(i, k));
 				out.add(b5.getOutput());
 			});
 		});
-		TestUtil.print(out.size());
-		TestUtil.print(config.time.length);
-		TestUtil.printRange(out, 60);
+		TestUtil.printRange(out, 10);
 
 		PrintUtil.print(pw -> {
 			for (int i = 0; i < out.size(); ++i) {

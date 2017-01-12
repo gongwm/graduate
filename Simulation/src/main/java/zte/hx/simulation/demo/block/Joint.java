@@ -26,10 +26,10 @@ public class Joint implements Block {
 		for (int i = 0; i < lines.size(); ++i) {
 			double output = lines.get(i).start.getOutput();
 			switch (formats.get(i)) {
-			case '+':
+			case ADD:
 				result += output;
 				break;
-			case '-':
+			case SUB:
 				result -= output;
 			}
 		}
