@@ -7,12 +7,11 @@ import zte.hx.util.groovy.IOUtil
 
 class SimulatorTest {
 	static def main(args){
-		Simulator sim=new Simulator()
-
 		def modelStr=IOUtil.readAsString('/zte/hx/simulation/demo/block/exciter_model.json')
 		def model=new JsonSlurper().parseText(modelStr)
 		println model
 
+		Simulator sim=new Simulator()
 		sim.initSystem(model)
 		TestUtil.timeIt{ sim.simulate() }
 

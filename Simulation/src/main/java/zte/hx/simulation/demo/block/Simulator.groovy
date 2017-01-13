@@ -60,12 +60,18 @@ class BlockFactory{
 	static def create(Map info){
 		def b
 		switch(info.type){
-			case 'step':b=new StepSource();break;
-			case 'joint':b=new Joint();break;
-			case 'inertia':b=new Inertia().config(info.k,info.t);break;
-			case 'amplifier':b=new Amplifier(info.k);break;
-			case 'limiter':b=new Limiter(info.upper,info.lower);break;
-			case 'scope':b=new Scope();break;
+			case 'step':
+					b=new StepSource();break;
+			case 'joint':
+					b=new Joint();break;
+			case 'inertia':
+					b=new Inertia().config(info.k,info.t);break;
+			case 'amplifier':
+					b=new Amplifier(info.k);break;
+			case 'limiter':
+					b=new Limiter(info.upper,info.lower);break;
+			case 'scope':
+					b=new Scope();break;
 			default: throw new IllegalArgumentException('no such model');break;
 		}
 		return b;
