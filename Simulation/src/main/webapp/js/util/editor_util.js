@@ -270,7 +270,6 @@ TreeEditor.prototype._commonStyle = function() {
 	};
 	// style.shadow = jmGraph.prototype.createShadow(0, 0, 10, '#000');
 	style.fontStyle = {
-		
 		textAlign : 'center',
 		textBaseline : 'middle',
 		font : '14px SimHei',

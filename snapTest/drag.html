@@ -1,0 +1,27 @@
+<html>
+<head>
+<script type="text/javascript" src="snap.svg-min.js"></script>
+
+<script type="text/javascript">
+window.onload=function(){
+var svg=Snap("#svg");
+
+var r1=svg.paper.rect(10,10,50,50).drag().attr(
+{stroke:"blue",strokeWidth:"2px",fill:"white"}
+);
+
+r1.click(function(e){
+console.log(e);
+});
+
+
+
+}
+</script>
+
+</head>
+
+<body>
+<svg id="svg" width="800" height="500" style="border:1px red solid"></svg>
+</body>
+</html>

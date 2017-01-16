@@ -1,0 +1,29 @@
+<html>
+<head>
+<script type="text/javascript" src="snap.svg-min.js"></script>
+
+<script type="text/javascript">
+window.onload=function(){
+var svg=Snap("#svg");
+
+var lastX,lastY;
+svg.mousemove(function(e){
+var x=e.offsetX;
+var y=e.offsetY;
+if(lastX){
+svg.line(lastX,lastY,x,y).attr({stroke:"blue",strokeWidth:1});
+}
+lastX=x;
+lastY=y;
+});
+
+
+}
+</script>
+
+</head>
+
+<body>
+<svg id="svg" width="800" height="500" style="border:1px red solid"></svg>
+</body>
+</html>

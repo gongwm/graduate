@@ -1,0 +1,31 @@
+<html>
+<head>
+<script type="text/javascript" src="snap.svg-min.js"></script>
+
+<script type="text/javascript">
+window.onload=function(){
+var svg=Snap("#svg");
+var last=null;
+svg.click(function(e){
+var x=e.offsetX;
+var y=e.offsetY;
+console.log(x+", "+y);
+if(last){
+var l=svg.paper.line(last.data("x"),last.data("y"),x,y).attr(
+{stroke:"blue",strokeWidth:2}
+);
+}
+var c=svg.paper.circle(x,y,5);
+c.data("x",x);
+c.data("y",y);
+last=c;
+});
+}
+</script>
+
+</head>
+
+<body>
+<svg id="svg" width="800" height="500" style="border:1px red solid"></svg>
+</body>
+</html>
