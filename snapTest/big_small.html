@@ -1,0 +1,92 @@
+<html>
+<head>
+<script type="text/javascript" src="snap.svg-min.js"></script>
+
+<script type="text/javascript">
+
+var TOP=0,RIGHT=1,BOTTOM=2,LEFT=3;
+
+function near(rect,orien,e){
+var y=rect.attr("y");
+var x=rect.attr("x");
+var m=rect.attr("transform").localMatrix;
+{var x0=x,y0=y;
+x=m.x(x0,y0);
+y=m.y(x0,y0);}
+
+var width=rect.attr("width");
+var height=rect.attr("height");
+
+var cursorX=e.offsetX;
+var cursorY=e.offsetY;
+
+var rx=cursorX-x;
+var ry=cursorY-y;
+
+if(orien==TOP&&ry<0.05*height){return true;}
+if(orien==LEFT&&rx<0.05*width){return true;}
+if(orien==BOTTOM&&ry>0.95*height){return true;}
+if(orien==RIGHT&&rx>0.95*width){return true;}
+return false;
+}
+
+function nearBorder(rect,e){
+return near(rect,TOP,e)||near(rect,LEFT,e)||near(rect,BOTTOM,e)||near(rect,RIGHT,e);
+}
+
+
+
+var rect;
+
+var m=new Snap.Matrix();
+
+window.onload=function(){
+var svg=Snap("#svg");
+
+rect=svg.paper.rect(100,100,200,100);
+rect.attr({fill:'white',stroke:'black'});
+rect.attr({cursor:'crosshair'});
+
+rect.mousemove(function(e){
+if(near(this,TOP,e)||near(this,BOTTOM,e)){
+rect.attr({cursor:'row-resize'});
+}else if(near(this,LEFT,e)||near(this,RIGHT,e)){
+rect.attr({cursor:'col-resize'});
+}else{
+rect.attr({cursor:'crosshair'});
+}});
+
+rect.drag(onmove,null,function onend(){
+var m=rect.attr("transform").localMatrix;
+var x1=Number(rect.attr("x"))+m.e,y1=Number(rect.attr("y"))+m.f;
+m.e=0;
+m.f=0;
+rect.attr({x:x1,y:y1,transform:m.toString()});
+});
+
+function onmove(dx,dy,x,y,e){
+if(near(this,TOP,e)){
+var newy=y;
+var h0=Number(rect.attr("height"));
+var newh=h0-(y-Number(rect.attr("y")));
+if(newh>0.1*h0){
+rect.attr({y:newy,height:newh});
+}}else{
+var m0=rect.attr("transform").localMatrix;
+var trans= m.translate(dx-m0.e,dy-m0.f);
+rect.attr({transform:trans});
+}}
+
+
+}
+
+
+
+</script>
+
+</head>
+
+<body>
+<svg id="svg" width="800" height="500" style="border:1px red solid"></svg>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<html>
+<head>
+<script type="text/javascript" src="snap.svg-min.js"></script>
+
+<script type="text/javascript">
+var svg,template;
+window.onload=function(){
+svg=Snap("#svg");
+template=Snap("#template");
+template.click(
+function(e){
+console.log(e);
+console.log(e.target);
+var t=Snap(e.target);
+console.log(t);
+t.attr({fill:'red'});
+});
+
+var c1=svg.paper.rect(10,10,100,50).
+    attr({fill:'white',stroke:'black'});
+var t1=svg.paper.text(10,20,'hello, snap');
+var g1=svg.paper.g(c1,t1);
+g1.drag();
+	
+svg.click(function(e){
+svg.paper.rect(e.offsetX,e.offsetY,100,50).
+  attr({fill:'white',stroke:'black'}).
+  drag();
+});
+
+svg.dblclick(function(e){
+svg.paper.text(e.offsetX,e.offsetY,"snap");
+});
+
+}
+</script>
+
+</head>
+
+<body>
+<svg id="template" width="150" height="500" 
+   style="margin-right:10px;border:1px blue solid">
+<rect id="t_rect" x="20" y="10" width="100" height="50" fill="white" stroke="black"></rect>   
+</svg>
+
+<svg id="svg" width="800" height="500" style="border:1px red solid"></svg>
+
+</body>
+</html>

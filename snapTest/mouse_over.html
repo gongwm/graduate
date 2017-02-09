@@ -1,0 +1,79 @@
+<html>
+<head>
+<script type="text/javascript" src="snap.svg-min.js"></script>
+
+<script type="text/javascript">
+function retFalse(){
+return false;
+}
+
+(function noselect(){
+if (typeof(document.onselectstart) != "undefined") {        
+  document.onselectstart = retFalse;
+} else {
+  document.onmousedown = retFalse;
+  document.onmouseup = retFalse;
+}
+})();
+
+var svg,template;
+var temp=null;
+var move=function(e){
+if(temp!=null){
+temp.attr({x:e.offsetX,y:e.offsetY});
+}}
+
+window.onload=function(){
+svg=Snap("#svg");
+template=Snap("#template");
+
+template.click( // copy template
+function(e){
+var target=Snap(e.target);
+if(target.type=='rect'&&temp==null){
+temp=Snap(target).clone();
+temp.drag();
+}});
+
+svg.node.onmouseenter=function(e){ // mouse enter
+if(temp!=null){
+svg.append(temp);
+svg.mousemove(move);
+}}
+
+svg.mouseout(function(e){ // mouse out
+if(e.toElement==document.body){
+if(temp!=null){
+temp.remove();
+svg.unmousemove(move);
+temp=null;
+}}});
+
+svg.click(function(e){ // lay
+if(temp!=null){
+svg.unmousemove(move);
+temp=null;
+}});
+
+svg.dblclick(function(e){ // remove
+if(e.target!=svg.node){
+Snap(e.target).remove();
+}});
+
+}
+</script>
+
+</head>
+<body>
+
+<svg id="template" width="150" height="500" 
+   style="margin-right:10px;border:1px blue solid">
+<rect id="t_rect" x="20" y="10" 
+  width="100" height="50" fill="white" stroke="black"
+  cursor="crosshair"></rect>   
+</svg>
+
+<svg id="svg" width="800" height="500" style="border:1px red solid"></svg>
+
+</body>
+</html>
