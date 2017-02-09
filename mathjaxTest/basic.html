@@ -1,0 +1,29 @@
+<html>
+<head>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    },
+	MathMenu: {
+      delay: 600
+    }
+  });
+  MathJax.Hub.Register.StartupHook("End Jax",function () {
+    return MathJax.Hub.setRenderer("SVG");
+  });
+</script>
+<script type="text/javascript" 
+src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+</script>
+<body>
+$$x^2$$
+$$x_1^2$$
+$x^2$<br/>
+\(x^2\)<br/>
+$B$<br/>
+${1+x\over 1+y}$<br/>
+${1\over 1+s}$
+</body>
+</html>
