@@ -56,16 +56,15 @@ rect.attr({cursor:'col-resize'});
 rect.attr({cursor:'crosshair'});
 }});
 
-rect.drag(onmove,null,function onend(){
+rect.drag(onmove,function onstart(){},function onend(){
 var m=rect.attr("transform").localMatrix;
 var x1=Number(rect.attr("x"))+m.e,y1=Number(rect.attr("y"))+m.f;
-m.e=0;
-m.f=0;
-rect.attr({x:x1,y:y1,transform:m.toString()});
+m.e=0,m.f=0;
+rect.attr({x:x1,y:y1,transform:m});
 });
 
 function onmove(dx,dy,x,y,e){
-if(near(this,TOP,e)){
+if(near(this,TOP,e)&&rect.attr("cursor")=='row-resize'){
 var newy=y;
 var h0=Number(rect.attr("height"));
 var newh=h0-(y-Number(rect.attr("y")));
@@ -74,7 +73,8 @@ rect.attr({y:newy,height:newh});
 }}else{
 var m0=rect.attr("transform").localMatrix;
 var trans= m.translate(dx-m0.e,dy-m0.f);
-rect.attr({transform:trans});
+rect.transform(trans);
+return;
 }}
 
 

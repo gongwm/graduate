@@ -1,0 +1,41 @@
+<html>
+<head>
+<script type="text/javascript" src="snap.svg-min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript">
+
+var svg,rect;
+
+var arc=null;
+
+$(function(){
+svg=Snap("#svg");
+
+rect=svg.paper.rect(100,100,100,50);
+rect.attr({id:'test',fill:'white',stroke:'black'}).drag();
+
+$("#save").click(function(){
+if(arc==null){
+var s=Snap("#svg");
+arc=s.toString();
+$("#svg").remove();
+}});
+
+$("#load").click(function(){
+if(arc!=null){
+$("body").prepend(arc);
+arc=null;
+}});
+
+});
+</script>
+
+</head>
+
+<body>
+<svg id="svg" width="800" height="500" style="border:1px red solid"></svg>
+<br/>
+<button id="save">save and remove</button>
+<button id="load">load and restore</button>
+</body>
+</html>
