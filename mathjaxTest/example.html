@@ -1,12 +1,20 @@
 <html>
 <head>
+
+<meta charset="utf-8">
+
 <title>MathJax Dynamic Math Test Page</title>
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
     tex2jax: {
       inlineMath: [["$","$"],["\\(","\\)"]]
     }
+  });
+  MathJax.Hub.Register.StartupHook("End Jax",function () {
+  return MathJax.Hub.setRenderer("SVG");
   });
 </script>
 <script type="text/javascript"
@@ -29,7 +37,7 @@
     //  Get the element jax when MathJax has produced it.
     //
     QUEUE.Push(function () {
-      math = MathJax.Hub.getAllJax("MathOutput")[0];
+      math = MathJax.Hub.getAllJax("out")[0];
     });
 
     //
@@ -37,18 +45,30 @@
     //  math entered by the user
     //
     window.UpdateMath = function (TeX) {
-      QUEUE.Push(["Text",math,"\\displaystyle{"+TeX+"}"]);
+	  QUEUE.Push(["Text",math,"\\displaystyle{"+TeX+"}"]);
     }
   })();
+  
+  $(function(){
+  $("#bt").click(function(){
+  var out=$("#gg svg").prop("outerHTML")+"<br/>";
+  $("#test").text(out);
+  $("#history").append(out);
+  });
+  });
 </script>
 
 Type some TeX code:
 <input id="MathInput" size="50" onchange="UpdateMath(this.value)" />
 <p>
 
-<div id="MathOutput">
-You typed: ${}$
+<div id="out">
+You typed: <span id="gg">${}$</span>
 </div>
+
+<br/><button id="bt">output</button>
+<xmp id="test" hidden="hidden"></xmp>
+<div id="history"></div>
 
 </body>
 </html>
