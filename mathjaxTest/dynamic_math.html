@@ -1,0 +1,52 @@
+<html>
+<head>
+
+<meta charset="utf-8">
+
+<title>MathJax Dynamic Math Test Page</title>
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [["$","$"],["\\(","\\)"]]
+    }
+  });
+  MathJax.Hub.Register.StartupHook("End Jax",function () {
+  return MathJax.Hub.setRenderer("SVG");
+  });
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full">
+</script>
+
+<script>
+var formulaSvg = (function() {
+	var queue = MathJax.Hub.queue, 
+	    math = null;
+	$(function(){
+		$("body").append('<div id="temp">${}$</div>');
+	})
+	queue.Push(function() {
+		math = MathJax.Hub.getAllJax("temp")[0];
+	});
+	return  {
+		set : function(formulaStr) {
+			var svg=null;
+			queue.Push(["Text", math, formulaStr]);
+		},
+		get : function(callback){
+			queue.Push(function(){
+				var svgStr=$("#temp svg").prop("innerHTML");
+				callback(svgStr);
+			});
+		}
+	}})();
+</script>
+
+</head>
+<body>
+
+</body>
+</html>
