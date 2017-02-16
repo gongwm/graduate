@@ -1,0 +1,78 @@
+<html>
+<head>
+
+<meta charset="utf-8">
+
+<script type="text/javascript" src="snap.svg-min.js"></script>
+
+<script type="text/javascript">
+var graduate={};
+graduate.SnapUtil=(function(){
+var util=function(svg){
+this.svg=svg;
+};
+
+util.prototype.line=function(p1,p2){
+return svg.paper.line(p1.x,p1.y,p2.x,p2.y).
+           attr({stroke:'black',strokeWidth:1});
+};
+
+return util;
+})();
+
+
+function xywh(rect){
+return {x:+rect.attr('x'),
+        y:+rect.attr('y'),
+		width:+rect.attr('width'),
+		height:+rect.attr('height')}
+}
+
+function rightMiddle(rect){
+var r=xywh(rect);
+return {x:r.x+r.width,y:r.y+r.height/2}
+}
+
+function leftMiddle(rect){
+var r=xywh(rect);
+return {x:r.x,y:r.y+r.height/2};
+}
+
+function topMiddle(rect){
+var r=xywh(rect);
+return {x:r.x+r.width/2,y:r.y};
+}
+
+function downMiddle(rect){
+var r=xywh(rect);
+return {x:r.x+r.width/2,y:r.y+r.height};
+}
+
+var svg,rect1,rect2;
+var util;
+
+
+window.onload=function(){
+svg=Snap("#svg");
+util=new graduate.SnapUtil(svg);
+
+rect1=svg.paper.rect(50,50,100,50);
+rect1.attr({stroke:'black',fill:'white',stokeWidth:1});
+rect2=rect1.clone();
+rect2.attr({x:300,y:100});
+
+var p1=rightMiddle(rect1);
+var p2=leftMiddle(rect2);
+util.line(p1,p2);
+
+
+
+}
+</script>
+
+</head>
+
+<body>
+<svg id="svg" width="800" height="500" style="border:1px red solid"></svg>
+</body>
+</html>

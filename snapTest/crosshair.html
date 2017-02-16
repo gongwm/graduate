@@ -1,0 +1,46 @@
+<html>
+<head>
+<script type="text/javascript" src="snap.svg-min.js"></script>
+
+<script type="text/javascript">
+
+var svg;
+
+window.onload=function(){
+svg=Snap("#svg");
+
+var vert=svg.paper.line(10,10,100,100);
+vert.attr({stroke:'blue',strokeWidth:1,'stroke-dasharray':'3,3'});
+var hori=vert.clone();
+vert.remove();
+hori.remove();
+
+svg.mouseover(function(e){
+svg.append(vert);
+svg.append(hori);
+});
+
+svg.mousemove(function(e){
+var x=e.offsetX;
+var y=e.offsetY;
+vert.attr({x1:x,y1:0,x2:x,y2:y});
+hori.attr({x1:0,y1:y,x2:x,y2:y});
+});
+
+svg.mouseout(function(e){
+if(e.toElement==document.body){
+vert.remove();
+hori.remove();
+}
+});
+
+
+}
+</script>
+
+</head>
+
+<body>
+<svg id="svg" width="800" height="500" style="border:1px red solid"></svg>
+</body>
+</html>
