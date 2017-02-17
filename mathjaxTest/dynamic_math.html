@@ -27,18 +27,17 @@ var formulaSvg = (function() {
 	    math = null;
 	$(function(){
 		$("body").append('<div id="temp">${}$</div>');
-	})
-	queue.Push(function() {
-		math = MathJax.Hub.getAllJax("temp")[0];
+		queue.Push(function() {
+			math = MathJax.Hub.getAllJax("temp")[0];
+		});
 	});
 	return  {
 		set : function(formulaStr) {
-			var svg=null;
 			queue.Push(["Text", math, formulaStr]);
 		},
 		get : function(callback){
 			queue.Push(function(){
-				var svgStr=$("#temp svg").prop("innerHTML");
+				var svgStr=$("#temp svg").prop("outerHTML");
 				callback(svgStr);
 			});
 		}
