@@ -1,4 +1,4 @@
-var Block=(function(root,Snap){
+var Block=(function(root,Snap,Line){
 function Block(block,id){
 	this.id=id;
 	this.block=block;
@@ -6,6 +6,7 @@ function Block(block,id){
 		
 	this._state=STATE_CONNECT;
 	this._svg=null;
+	this._model=null;
 	this._k=1.0;
 	this._t=1.0;
 }
@@ -73,18 +74,23 @@ proto.connectMode=function(){
 		line=Snap.parse("<line></line>").select("line")
 			.attr({stroke:'black','stroke-dasharray':'3,3',x1:center.x,y1:center.y}),
 		svg=this._svg;
+		_this=this;
 	block.undrag();
+	
 	block.drag(function onmove(dx,dy,x,y,e){
 		line.attr({x2:x,y2:y});
 	},function onstart(x,y,e){
 		svg.append(line);
 		line.attr({x2:x,y2:y});
 	},function onend(e){
-		var fromBlock=this.block,
-			toElement=e.target;
-		console.log(e);
+		var fromBlock=_this.block,
+			toElement=e.target,
+			id=toElement.parentElement.attributes.id,
+			model=_this._model;
 		line.remove();
-		
+		if(model.exsitBlock(id)){
+			model.addLine(fromBlock.id,model.components[id]);
+		}
 	});
 }
 
@@ -94,10 +100,19 @@ proto.moveMode=function(){
 	block.drag();
 }
 
-proto.attachTo=function(svg){
+proto.attachToSvg=function(svg){
 	this._svg=svg;
 	svg.append(this.block);
-}	
+}
+
+proto.attachToModel=function(model){
+	this._model=model;
+}
+
+proto.detach=function(){
+	this._svg=null;
+	this._model=null;
+}
 	
 proto._central=function(){
 	var r=this._xywh();
@@ -173,5 +188,5 @@ proto.toModel=function(){
 
 root.Block=Block;
 return Block;	
-})(window || this,Snap);
+})(window || this,Snap,Line);
 

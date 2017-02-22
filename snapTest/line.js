@@ -30,8 +30,15 @@ var Line=(function(Snap){
 		});
 	}
 	
-	proto.attachTo=function(svg){
+	proto.attachToSvg=function(svg){
 		svg.append(this._path);
+	}
+	
+	proto.detach=function(){
+		this._path.remove();
+		this._path=null;
+		this._fromBlock=null;
+		this._toBlock=null;
 	}
 	
 	proto.redraw=function(){
