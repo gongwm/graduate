@@ -5,21 +5,32 @@
 
 <script type="text/javascript" src="snap.svg-min.js"></script>
 
-<script type="text/javascript">
-window.onload=function(){
-var svg=Snap("#svg");
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [["$","$"],["\\(","\\)"]]
+    }
+  });
+  MathJax.Hub.Register.StartupHook("End Jax",function () {
+  return MathJax.Hub.setRenderer("SVG");
+  });
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full">
+</script>
 
+<script>
+$(function(){
 
-
-
-
-}
+});
 </script>
 
 </head>
-
 <body>
+
 <svg id="svg" width="800" height="500" style="border:1px red solid"></svg>
+
 </body>
 </html>

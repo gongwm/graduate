@@ -12,15 +12,15 @@ var Model=(function(){
 	var proto=Model.prototype;
 	
 	proto.addBlock=function(block){
-		components["b"+(++b_idx)]=block;
+		components[block.id]=block;
 	}
 	
 	proto.addLine=function(line){
-		lines["l"+(++l_idx)]=line;
+		lines[line.id]=line;
 	}
 	
 	proto.valid=function(){
-		
+		// TO-DO
 	}
 	
 	proto.toJsonModel=function(){

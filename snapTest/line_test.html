@@ -8,9 +8,11 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 
 <script src="block.js"></script>
+<script src="line.js"></script>
 
 <script>
-var svg,b1,b2;
+
+var svg,b1,b2,line;
 
 $(function(){
 svg=Snap("#svg");
@@ -19,11 +21,14 @@ Block._predefs(svg);
 
 b1=Block.createInertia();
 b1.attachTo(svg);
-b1.moveTo(100,100);
+b1.moveTo(50,50);
 
 b2=Block.createInertia();
 b2.attachTo(svg);
-b2.moveTo(300,150);
+b2.moveTo(200,100);
+
+line=new Line(b1,b2);
+line.attachTo(svg);
 
 });
 </script>

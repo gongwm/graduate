@@ -1,4 +1,4 @@
- <html>
+<html>
 <head>
 
 <meta charset="utf-8">
@@ -21,16 +21,12 @@
   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full">
 </script>
 
-<script src="block.js"></script>
-
 <script>
-var svg,rect;
+
+var svg;
 
 $(function(){
 svg=Snap("#svg");
-
-rect=svg.paper.rect(10,10,100,50);
-rect.attr({fill:'white',stroke:'black'}).drag();
 
 });
 </script>
