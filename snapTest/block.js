@@ -2,6 +2,8 @@ var Block=(function(root,Snap,Line){
 function Block(block,id){
 	this.id=id;
 	this.block=block;
+	this.lines=[];
+	
 	this._rect=block.select("rect");
 		
 	this._state=STATE_CONNECT;
@@ -16,6 +18,17 @@ var _idx=0,
 	eve=['move','drag','select'],
 	STATE_MOVE=1,
 	STATE_CONNECT=2;
+
+function hasParent(elem,id){
+	var e=elem;
+	do{
+		if(e.hasAttribute("id")&&e.attributes["id"].value==id){
+			return true;
+		}
+		e=e.parentElement;
+	}while(e&&e.tagName.toLowerCase()!="body");
+	return false;
+}
 
 /* predefined blocks */
 Block.inertia=(function(){
@@ -39,10 +52,6 @@ Block.inertia=(function(){
 		'  </svg>'+
 		'</g>';
     inertia=Block.inertia=Snap.parse(inertiaSvg).select("g");
-
-	inertia.drag(function(){ 
-		// TO-DO
-	});
 	return inertia;
 })();
 
@@ -64,7 +73,6 @@ Block.createInertia=function(){
 	var iner=Block.inertia.clone();
 	var id="b"+(++_idx);
 	iner.attr({id:id});
-	iner.drag();
 	return new Block(iner,id);
 }
 
@@ -73,7 +81,7 @@ proto.connectMode=function(){
 		block=this.block,
 		line=Snap.parse("<line></line>").select("line")
 			.attr({stroke:'black','stroke-dasharray':'3,3',x1:center.x,y1:center.y}),
-		svg=this._svg;
+		svg=this._svg,
 		_this=this;
 	block.undrag();
 	
@@ -85,19 +93,41 @@ proto.connectMode=function(){
 	},function onend(e){
 		var fromBlock=_this.block,
 			toElement=e.target,
-			id=toElement.parentElement.attributes.id,
-			model=_this._model;
+			model=_this._model,
+			id="";
 		line.remove();
-		if(model.exsitBlock(id)){
-			model.addLine(fromBlock.id,model.components[id]);
+		for(var compId in model.components){
+			if(hasParent(toElement,compId)){
+				id=compId;
+				break;
+			}
+		}
+		if(id!=""){
+			model.addLine(_this.id,id);
 		}
 	});
 }
 
 proto.moveMode=function(){
-	var block=this.block;
+	var block=this.block,
+		lines=this.lines,
+		m=block.attr("transform").totalMatrix,
+		m0=null;
+		
 	block.undrag();
-	block.drag();
+	block.drag(function onmove(dx,dy,x,y,e){
+		var trans= m.translate(m0.e+dx-m.e,m0.f+dy-m.f);
+		block.transform(trans);
+		for(var idx in lines){
+			lines[idx].redraw();
+		}
+	},function onstart(x,y,e){
+		m0=m.clone();
+	});
+}
+
+proto.addLine=function(line){
+	this.lines.push(line);
 }
 
 proto.attachToSvg=function(svg){
@@ -112,6 +142,7 @@ proto.attachToModel=function(model){
 proto.detach=function(){
 	this._svg=null;
 	this._model=null;
+	this.lines=[];
 }
 	
 proto._central=function(){

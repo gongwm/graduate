@@ -6,12 +6,11 @@
 
 <script type="text/javascript" src="snap.svg-min.js"></script>
 
-<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="jquery-3.1.1.min.js"></script>
 
 <script src="line.js"></script>
 <script src="block.js"></script>
 <script src="model.js"></script>
-
 
 <script>
 
@@ -25,6 +24,7 @@ b1=model.addBlock(50,50);
 b2=model.addBlock(200,100);
 
 b1.connectMode();
+model.addLine(b1.id,b2.id);
 
 });
 </script>

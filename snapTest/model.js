@@ -24,6 +24,7 @@ var Model=(function(Block,Line){
 		block.moveTo(x,y);
 		var model=this;
 		block.attachToModel(model);
+		block.moveMode();
 		return block;
 	}
 	
@@ -50,8 +51,17 @@ var Model=(function(Block,Line){
 	}
 	
 	proto.addLine=function(fromId,toId){
+		if(fromId==toId){
+			return;
+		}
+		for(var key in this.lines){
+			var line=this.lines[key];
+			if(line._fromBlock.id==fromId&&line._toBlock.id==toId){
+				return;
+			}
+		}
 		var line=new Line(this.components[fromId],this.components[toId]);
-		this.lines[line.id]=line;
+		this.lines[line._id]=line;
 		line.attachToSvg(this.svg);
 		return line;
 	}
@@ -66,7 +76,18 @@ var Model=(function(Block,Line){
 	}
 	
 	proto.toJsonModel=function(){
-		var model={'config':config,'components':components,lines:'lines'};
+		var blocks={},
+			components=this.components,
+			lines=this.lines,
+			lineModels={};
+		for(var key in components){
+			blocks[key]=components[key].toModel();
+		}
+		for(key in lines){
+			lineModels[key]=lines[key].toModel();
+		}
+		
+		var model={'config':this.config,'components':blocks,'lines':lineModels};
 		return toJson(model);
 	}
 	

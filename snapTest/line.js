@@ -1,14 +1,16 @@
 var Line=(function(Snap){
-	var idx=0;
+	var idx=0,
+		proto=Line.prototype;
 	
 	function Line(fromBlock,toBlock){
 		this._id=replace("l{1}",++idx);
 		this._fromBlock=fromBlock;
 		this._toBlock=toBlock;
 		this._path=draw(fromBlock,toBlock);
+		
+		fromBlock.lines.push(this);
+		toBlock.lines.push(this);
 	}
-	
-	var proto=Line.prototype;
 	
 	function draw(fromBlock,toBlock){
 		var p=Snap.parse("<path></path>").select("path");
@@ -16,7 +18,7 @@ var Line=(function(Snap){
 		p.attr({stroke:'black',d:ps});
 		return p;
 	}
-	
+		
 	function resolvePathString(b1,b2){
 		var p1=b1._rightMid();
 		var p2=b2._leftMid();
@@ -47,7 +49,7 @@ var Line=(function(Snap){
 	}
 	
 	proto.toModel=function(){
-		return {id:[this._fromBlock.id,this._toBlock.id]};
+		return [this._fromBlock.id,this._toBlock.id];
 	}
 	
 	return Line;
