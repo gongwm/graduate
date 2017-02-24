@@ -2,6 +2,14 @@ var Line=(function(Snap){
 	var idx=0,
 		proto=Line.prototype;
 	
+	Line.lineEnd=null;
+			
+	Line._predefs=function(svg){
+		var m=svg.paper.path("M2,2 L2,11 L10,6 L2,2")
+			.attr({fill: 'black'});
+		Line.lineEnd=m.marker(0,0,13,13,10,6);
+	}
+	
 	function Line(fromBlock,toBlock){
 		this._id=replace("l{1}",++idx);
 		this._fromBlock=fromBlock;
@@ -15,7 +23,7 @@ var Line=(function(Snap){
 	function draw(fromBlock,toBlock){
 		var p=Snap.parse("<path></path>").select("path");
 		var ps=resolvePathString(fromBlock,toBlock);
-		p.attr({stroke:'black',d:ps});
+		p.attr({stroke:'black',d:ps,'marker-end':Line.lineEnd});
 		return p;
 	}
 		

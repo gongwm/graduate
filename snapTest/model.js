@@ -9,6 +9,7 @@ var Model=(function(Block,Line){
 		this.b_idx=0;
 		this.l_idx=0;
 		Block._predefs(svg);
+		Line._predefs(svg);
 	}
 	
 	var proto=Model.prototype;

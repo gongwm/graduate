@@ -1,4 +1,4 @@
-<html>
+ <html>
 <head>
 
 <meta charset="utf-8">
@@ -6,11 +6,12 @@
 <script type="text/javascript" src="snap.svg-min.js"></script>
 
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+
 <script src="line.js"></script>
 <script src="block.js"></script>
 
 <script>
-var svg,b1,b2;
+var svg,b1,j1;
 
 $(function(){
 svg=Snap("#svg");
@@ -22,15 +23,27 @@ b1.attachToSvg(svg);
 b1.moveTo(100,100);
 b1.moveMode();
 
-b2=Block.createInertia();
-b2.attachToSvg(svg);
-b2.moveTo(300,150);
-b2.moveMode();
+var c=svg.paper.circle(15,15,15);
+c.attr({fill:'white',stroke:'black',strokeWidth:2});
+var sin=Snap.sin,
+	cos=Snap.cos;
 
-Line.predefs(svg);
-var line=new Line(b1,b2);
-line.attachToSvg(svg);
+var p1x=15-15*cos(45),
+	p1y=15-15*sin(45),
+	p2x=15+15*cos(45),
+	p2y=15+15*sin(45);
+var l1=svg.paper.line(p1x,p1y,p2x,p2y);
+l1.attr({stroke:'black'});
 
+p1x=15+15*cos(45);
+p1y=15-15*sin(45);
+p2x=15-15*cos(45);
+p2y=15+15*sin(45);
+var l2=svg.paper.line(p1x,p1y,p2x,p2y);
+l2.attr({stroke:'black'});
+
+j1=svg.g(c,l1,l2);
+j1.drag();
 });
 </script>
 
