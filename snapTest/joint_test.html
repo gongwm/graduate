@@ -11,7 +11,7 @@
 <script src="block.js"></script>
 
 <script>
-var svg,b1,j1;
+var svg,b1,j1,joint;
 
 $(function(){
 svg=Snap("#svg");
@@ -44,6 +44,11 @@ l2.attr({stroke:'black'});
 
 j1=svg.g(c,l1,l2);
 j1.drag();
+
+// api test
+joint=Block.createJoint(200,200);
+joint.attachToSvg(svg);
+
 });
 </script>
 

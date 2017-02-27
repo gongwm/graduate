@@ -1,34 +1,26 @@
-<html>
+ <html>
 <head>
 
 <meta charset="utf-8">
 
 <script type="text/javascript" src="snap.svg-min.js"></script>
 
-<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="jquery-3.1.1.min.js"></script>
+
 <script src="line.js"></script>
 <script src="block.js"></script>
+<script src="model.js"></script>
 
 <script>
-var svg,b1,b2;
+var svg,model,joint;
 
 $(function(){
 svg=Snap("#svg");
 
-Block._predefs(svg);
+model=new Model(svg);
+model.addBlock(50,50).connectMode();
+joint=model.addBlock(200,100,Block.types.JOINT);
 
-b1=Block.createInertia();
-b1.attachToSvg(svg);
-b1.moveTo(100,100);
-b1.moveMode();
-
-b2=Block.createInertia();
-b2.attachToSvg(svg);
-b2.moveTo(300,150);
-b2.moveMode();
-
-var line=new Line(b1,b2);
-line.attachToSvg(svg);
 
 });
 </script>

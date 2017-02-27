@@ -12,14 +12,19 @@ var Model=(function(Block,Line){
 		Line._predefs(svg);
 	}
 	
-	var proto=Model.prototype;
+	var proto=Model.prototype,
+		options=Block.options,
+		types=Block.types;
 	
 	proto.exsitBlock=function(id){
 		return this.components[id]!=null;
-	}
+	};
 	
-	proto.addBlock=function(x,y){
-		var block=Block.createInertia();
+	proto.addBlock=function(x,y,type){
+		if(!type){
+			type=types.INERTIA;
+		}
+		var block=Block.perform(options.CREATE,type,x,y);
 		this.components[block.id]=block;
 		block.attachToSvg(this.svg);
 		block.moveTo(x,y);
@@ -27,7 +32,7 @@ var Model=(function(Block,Line){
 		block.attachToModel(model);
 		block.moveMode();
 		return block;
-	}
+	};
 	
 	proto.removeBlock=function(id){
 		var block=components[id],
@@ -38,7 +43,7 @@ var Model=(function(Block,Line){
 			var lineId=relatedLines[idx]._id;
 			this.removeLine(lineId);
 		}
-	}
+	};
 	
 	function relatedLinesOf(block){
 		var lines=[];
@@ -51,11 +56,15 @@ var Model=(function(Block,Line){
 		return lines;
 	}
 	
+	proto.find=function(id){
+		return model.components[id];
+	}
+	
 	proto.addLine=function(fromId,toId){
 		if(fromId==toId){
 			return;
 		}
-		for(var key in this.lines){
+		for(var key in this.lines){ // avoid repeat add
 			var line=this.lines[key];
 			if(line._fromBlock.id==fromId&&line._toBlock.id==toId){
 				return;
@@ -65,16 +74,18 @@ var Model=(function(Block,Line){
 		this.lines[line._id]=line;
 		line.attachToSvg(this.svg);
 		return line;
-	}
+	};
+	
+	proto.connect=proto.addLine;
 	
 	proto.removeLine=function(id){
 		var line=this.lines[id];
 		line.detach();
-	}
+	};
 	
 	proto.valid=function(){
 		// TO-DO
-	}
+	};
 	
 	proto.toJsonModel=function(){
 		var blocks={},
@@ -90,12 +101,12 @@ var Model=(function(Block,Line){
 		
 		var model={'config':this.config,'components':blocks,'lines':lineModels};
 		return toJson(model);
-	}
+	};
 	
 	proto.toJsonPersist=function(){
 		var ret={svg:this.svg.toString(),model:toJsonModel()};
 		return ret;
-	}
+	};
 		
 	return Model;
 })(Block,Line);

@@ -28,8 +28,8 @@ var Line=(function(Snap){
 	}
 		
 	function resolvePathString(b1,b2){
-		var p1=b1._rightMid();
-		var p2=b2._leftMid();
+		var p1=b1.outPoint();
+		var p2=b2.inPoint();
 		return replace("M{1},{2}L{3},{4}",p1.x,p1.y,p2.x,p2.y);
 	}
 	
