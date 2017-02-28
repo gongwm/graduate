@@ -3,7 +3,7 @@ var Model=(function(Block,Line){
 	
 	function Model(svg){
 		this.svg=svg;
-		this.config={};
+		this.config={type:'fixed',T:0.01,t:0.0,tt:10.0};
 		this.components={};
 		this.lines={};
 		this.b_idx=0;
@@ -98,7 +98,7 @@ var Model=(function(Block,Line){
 		for(key in lines){
 			lineModels[key]=lines[key].toModel();
 		}
-		
+
 		var model={'config':this.config,'components':blocks,'lines':lineModels};
 		return toJson(model);
 	};

@@ -22,7 +22,7 @@ function performOption(opt,type,args){
 	}
 	var m=Block[opt+type];
 	if(!m){
-		throw new Error('function Block.'+prpo+' undefined');
+		throw new Error('function Block.'+prop+' undefined');
 	}
 	return m(args);
 }
@@ -33,13 +33,13 @@ function throwNotImplementedError(){
 	throw new Error("should be implemented by sub-class");
 }
 
-function throwNotSupportedOperationError(){
+function throwOperationNotSupportedError(){
 	throw new Error("operation not supported");
 }
 
 _.methodNotImplemented=throwNotImplementedError;
 
-_.operationNotSupported=throwNotSupportedOperationError;
+_.operationNotSupported=throwOperationNotSupportedError;
 
 Block._predefs=function(svg){
 	allTypes.forEach(function(type){
@@ -127,9 +127,7 @@ proto.lineAdded=function(line){
 }
 
 proto.inPoint=throwNotImplementedError;
-
 proto.outPoint=throwNotImplementedError;
-
 proto.toModel=throwNotImplementedError;
 
 Block.plugin=function(f){

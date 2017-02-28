@@ -5,7 +5,7 @@ if __name__=='__main__':
 	if(len(args)<2):
 		print('Usage: drag file to this py file')
 		print('Output: multi-line js string')
-		input()
+		sys.exit()
 	
 	with open(args[1],'r+') as f:
 		f.write('\n\n')
