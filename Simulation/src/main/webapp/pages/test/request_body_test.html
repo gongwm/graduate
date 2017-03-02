@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>get request body in controller</title>
+
+<script type="text/javascript"
+	src="/Simulation/js/easyui-1.5/jquery.min.js"></script>
+
+<script type="text/javascript">
+	$(function() {
+		$("#bt").click(function() {
+			var url = "/Simulation/request_body_test.action";
+			$.post(url, {
+				name : 'hx',
+				age : 25
+			});
+		});
+	});
+</script>
+
+</head>
+<body>
+	<button id="bt">click</button>
+	<input type="text" value="haha" />
+</body>
+</html>

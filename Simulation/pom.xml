@@ -108,6 +108,8 @@
 				<version>9.2.10.v20150310</version>
 
 				<configuration>
+					<reload>automatic</reload>
+					<scanIntervalSeconds>0</scanIntervalSeconds>
 					<webApp>
 						<contextPath>/Simulation</contextPath>
 						<defaultsDescriptor>src/main/resources/webdefault.xml</defaultsDescriptor>

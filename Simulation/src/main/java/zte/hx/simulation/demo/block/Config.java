@@ -32,4 +32,8 @@ public class Config {
 			time[i] = t;
 		}
 	}
+	
+	public double[] getTime(){
+		return time;
+	}
 }

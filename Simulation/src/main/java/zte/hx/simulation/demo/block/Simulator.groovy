@@ -54,6 +54,16 @@ class Simulator {
 
 	private def adjustLine(){
 	}
+	
+	def findOutputs(){
+		return components.findAll {
+			return it.value instanceof Scope
+		}
+	}
+	
+	def getTime(){
+		return config.getTime();
+	}
 }
 
 class BlockFactory{
