@@ -11,6 +11,13 @@ var Line=(function(Snap){
 	}
 	
 	function Line(fromBlock,toBlock){
+		try{
+			toBlock.inPoint();
+			fromBlock.outPoint();
+		}catch(e){
+			throw e;
+		}
+		
 		this._id=replace("l{1}",++idx);
 		this._fromBlock=fromBlock;
 		this._toBlock=toBlock;

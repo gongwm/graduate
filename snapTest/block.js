@@ -8,9 +8,9 @@ function Block(){
 Block._={};
 
 var proto=Block.prototype,
-	allTypes=['Inertia','Joint','Step'],
+	allTypes=['Inertia','Joint','Step','Scope'],
 	options={PREDEF:'_predef',CREATE:'create'},
-	types={INERTIA:'Inertia',JOINT:'Joint',STEP:'Step'},
+	types={INERTIA:'Inertia',JOINT:'Joint',STEP:'Step',SCOPE:'Scope'},
 	_=Block._;
 
 Block.options=options;
@@ -47,6 +47,13 @@ Block._predefs=function(svg){
 	})
 };
 
+proto._redrawLines=function(){
+	var lines=this.lines;
+	for(var idx in lines){
+		lines[idx].redraw();
+	}
+}
+
 proto.addLine=function(line){
 	this.lines.push(line);
 };
@@ -69,18 +76,20 @@ proto.detach=function(){
 proto.moveMode=function(){
 	var block=this.block,
 		lines=this.lines,
-		m=block.transform().totalMatrix,
-		m0=null;
+		m=null,
+		m0=null,
+		_this=this;
 		
 	block.undrag();
 	block.drag(function onmove(dx,dy,x,y,e){
-		var trans= m.translate(m0.e+dx-m.e,m0.f+dy-m.f);
-		block.transform(trans);
-		for(var idx in lines){
-			lines[idx].redraw();
-		}
+		m.translate(m0.e+dx-m.e,m0.f+dy-m.f);
+		block.transform(m);
+		_this._redrawLines();
 	},function onstart(x,y,e){
+		m=block.transform().totalMatrix;
 		m0=m.clone();
+	},function onend(e){
+		m=block.transform().totalMatrix;
 	});
 	return this;
 };
@@ -95,7 +104,7 @@ proto.connectMode=function(){
 	block.undrag();
 	
 	block.drag(function onmove(dx,dy,x,y,e){
-		line.attr({x2:x-15,y2:y-15});
+		line.attr({x2:x-5,y2:y-5});
 	},function onstart(x,y,e){
 		svg.append(line);
 		line.attr({x2:x,y2:y});
@@ -119,6 +128,15 @@ proto.moveTo=function(x,y){
 	m.translate(x-bp.x,y-bp.y);
 	this.block.transform(m.toTransformString());
 };
+
+proto.flip=function(){
+	var block=this.block,
+		m=block.transform().totalMatrix,
+		bp=this.basePoint();
+	m.rotate(180,bp.x,bp.y);
+	block.transform(m);
+	this._redrawLines();
+}
 
 proto.basePoint=throwNotImplementedError;
 
@@ -416,3 +434,46 @@ proto.inPoint=operationNotSupported;
 
 return Step;
 });
+
+
+var Scope=Block.plugin(function(Block,Snap){
+function Scope(){
+	this.id="sc"+(++_idx);
+	this.type="scope";
+	this.block=Block.scope.use().attr({id:this.id});
+	this._rect=Block.scope.select("rect");
+}
+
+Scope.prototype=new RectangleBase;
+Scope.prototype.constructor=Scope;
+
+var proto=Scope.prototype,
+	_idx=0,
+	operationNotSupported=Block._.operationNotSupported;
+
+Block.Scope=null;
+
+Block._predefScope=function(svg){
+	var c1=svg.paper.rect(0,0,26,30).attr({stroke:'black',strokeWidth:2,fill:'white'});
+	var p1=svg.paper.rect(5,3,16,15).attr({stroke:'black',strokeWidth:2,fill:'white'});
+	
+	var g=svg.g(c1,p1);
+	Block.scope=g.toDefs();
+}
+
+Block.createScope=function(x,y){
+	var s=new Scope;
+	s.moveTo(x,y);
+	return s;
+};
+
+proto.toModel=function(){
+	return {type:this.type};
+}
+
+proto.outPoint=operationNotSupported;
+
+return Scope;	
+});
+
+

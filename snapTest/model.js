@@ -1,6 +1,4 @@
 var Model=(function(Block,Line){
-	var toJson=JSON.stringify;
-	
 	function Model(svg){
 		this.svg=svg;
 		this.config={type:'fixed',T:0.01,t:0.0,tt:10.0};
@@ -8,13 +6,18 @@ var Model=(function(Block,Line){
 		this.lines={};
 		this.b_idx=0;
 		this.l_idx=0;
-		Block._predefs(svg);
-		Line._predefs(svg);
 	}
 	
 	var proto=Model.prototype,
 		options=Block.options,
-		types=Block.types;
+		types=Block.types,
+		toJson=JSON.stringify;
+		
+	function predef(svg){
+		Block._predefs(svg);
+		Line._predefs(svg);
+	}
+	Model.predef=predef;
 	
 	proto.exsitBlock=function(id){
 		return this.components[id]!=null;
@@ -70,7 +73,14 @@ var Model=(function(Block,Line){
 				return;
 			}
 		}
+		try{
 		var line=new Line(this.components[fromId],this.components[toId]);
+		
+		
+		}catch(e){
+			alert(e.message);
+			return;
+		}
 		this.lines[line._id]=line;
 		line.attachToSvg(this.svg);
 		return line;
@@ -82,6 +92,22 @@ var Model=(function(Block,Line){
 		var line=this.lines[id];
 		line.detach();
 	};
+	
+	proto.connectMode=function(){
+		var comps=this.components;
+		for(key in comps){
+			var comp=comps[key];
+			comp.connectMode();
+		}
+	}
+	
+	proto.moveMode=function(){
+		var comps=this.components;
+		for(key in comps){
+			var comp=comps[key];
+			comp.moveMode();
+		}
+	}
 	
 	proto.valid=function(){
 		// TO-DO
