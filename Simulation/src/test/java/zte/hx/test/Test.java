@@ -1,15 +1,17 @@
 package zte.hx.test;
 
-import zte.hx.test.HelloWorld;
-import zte.hx.test.HelloWorldGroovy;
-import zte.hx.util.TestUtil;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Test {
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
-		HelloWorld h = new HelloWorld();
-		TestUtil.print(h.sayHello());
-		
-		HelloWorldGroovy hw=new HelloWorldGroovy();
-		TestUtil.print(hw.sayHello());
+		List<Integer>[] l = new List[4];
+		Object o = l;
+		Object[] oo = (Object[]) o;
+		List<String> s = new ArrayList<String>();
+		s.add("asdf");
+		oo[0] = s;
+		System.out.println(((List<String>) oo[0]).get(0));
 	}
 }

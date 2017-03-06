@@ -52,7 +52,7 @@ proto._redrawLines=function(){
 	for(var idx in lines){
 		lines[idx].redraw();
 	}
-}
+};
 
 proto.addLine=function(line){
 	this.lines.push(line);
@@ -120,7 +120,7 @@ proto.connectMode=function(){
 		}
 	});
 	return this;
-}
+};
 	
 proto.moveTo=function(x,y){
 	var m=new Snap.Matrix,
@@ -136,13 +136,13 @@ proto.flip=function(){
 	m.rotate(180,bp.x,bp.y);
 	block.transform(m);
 	this._redrawLines();
-}
+};
 
 proto.basePoint=throwNotImplementedError;
 
 proto.lineAdded=function(line){
 	// invoked when a line is connected to a block.
-}
+};
 
 proto.inPoint=throwNotImplementedError;
 proto.outPoint=throwNotImplementedError;
@@ -227,7 +227,7 @@ var _idx=0,
 
 Block.createInertia=function(){
 	return new Inertia;
-}
+};
 
 Block.inertia=null;
 
@@ -266,7 +266,7 @@ Block._predefInertia=function(svg){
 		inertia=Snap.parse(inertiaSvg).select("g");
 	svg.append(inertia);
 	Block.inertia=inertia.toDefs();
-}
+};
 
 proto.set=function(k,t){
 this._k=k;
@@ -381,7 +381,7 @@ var Joint=Block.plugin(function(Block,Snap){
 	
 	proto.lineAdded=function(line){
 		this.lineMode[line._id]=LINE_MODE_PLUS;
-	}
+	};
 	
 	proto.toModel=function(){
 		var lines={},
@@ -390,7 +390,7 @@ var Joint=Block.plugin(function(Block,Snap){
 			lines[prop]=lineMode[prop];
 		}
 		return {type:this.type,lines:lines};
-	}
+	};
 
 	return Joint;
 });
@@ -418,7 +418,7 @@ Block._predefStep=function(svg){
 	
 	var g=svg.g(c1,p1);
 	Block.step=g.toDefs();
-}
+};
 
 Block.createStep=function(x,y){
 	var s=new Step;
@@ -428,7 +428,7 @@ Block.createStep=function(x,y){
 
 proto.toModel=function(){
 	return {type:this.type};
-}
+};
 
 proto.inPoint=operationNotSupported;
 
@@ -459,7 +459,7 @@ Block._predefScope=function(svg){
 	
 	var g=svg.g(c1,p1);
 	Block.scope=g.toDefs();
-}
+};
 
 Block.createScope=function(x,y){
 	var s=new Scope;
@@ -469,7 +469,7 @@ Block.createScope=function(x,y){
 
 proto.toModel=function(){
 	return {type:this.type};
-}
+};
 
 proto.outPoint=operationNotSupported;
 

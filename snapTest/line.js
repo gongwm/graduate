@@ -8,7 +8,7 @@ var Line=(function(Snap){
 		var m=svg.paper.path("M2,2 L2,11 L10,6 L2,2")
 			.attr({fill: 'black'});
 		Line.lineEnd=m.marker(0,0,13,13,10,6);
-	}
+	};
 	
 	function Line(fromBlock,toBlock){
 		try{
@@ -49,23 +49,23 @@ var Line=(function(Snap){
 	
 	proto.attachToSvg=function(svg){
 		svg.append(this._path);
-	}
+	};
 	
 	proto.detach=function(){
 		this._path.remove();
 		this._path=null;
 		this._fromBlock=null;
 		this._toBlock=null;
-	}
+	};
 	
 	proto.redraw=function(){
 		var ps=resolvePathString(this._fromBlock,this._toBlock);
 		this._path.attr({d:ps});
-	}
+	};
 	
 	proto.toModel=function(){
 		return [this._fromBlock.id,this._toBlock.id];
-	}
+	};
 	
 	return Line;
 })(Snap);

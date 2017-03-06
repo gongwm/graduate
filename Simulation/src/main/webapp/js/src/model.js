@@ -61,7 +61,7 @@ var Model=(function(Block,Line){
 	
 	proto.find=function(id){
 		return model.components[id];
-	}
+	};
 	
 	proto.addLine=function(fromId,toId){
 		if(fromId==toId){
@@ -99,7 +99,7 @@ var Model=(function(Block,Line){
 			var comp=comps[key];
 			comp.connectMode();
 		}
-	}
+	};
 	
 	proto.moveMode=function(){
 		var comps=this.components;
@@ -107,7 +107,7 @@ var Model=(function(Block,Line){
 			var comp=comps[key];
 			comp.moveMode();
 		}
-	}
+	};
 	
 	proto.valid=function(){
 		// TO-DO
