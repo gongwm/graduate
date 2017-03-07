@@ -21,9 +21,9 @@ public class Inertia implements LinearBlock {
 		c1 = pow(e, -config.T / t);
 		c2 = k * (1 - pow(e, -config.T / t));
 	}
-	
-	void setConfig(Config config){
-		this.config=config;
+
+	void setConfig(Config config) {
+		this.config = config;
 		initRatio();
 	}
 
@@ -40,5 +40,10 @@ public class Inertia implements LinearBlock {
 
 	public double getOutput() {
 		return output;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("block inertia. k: %f, t: %f", k, t);
 	}
 }

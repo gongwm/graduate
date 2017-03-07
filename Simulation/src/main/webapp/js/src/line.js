@@ -40,7 +40,7 @@ var Line=(function(Snap){
 		return replace("M{1},{2}L{3},{4}",p1.x,p1.y,p2.x,p2.y);
 	}
 	
-	function replace(str/*...*/){
+	function replace(str){
 		var args=arguments;
 		return str.replace(/\{(\d+)\}/g, function(m,i){
 			return args[i];

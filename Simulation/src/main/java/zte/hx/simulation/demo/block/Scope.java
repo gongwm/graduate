@@ -3,6 +3,8 @@ package zte.hx.simulation.demo.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import zte.hx.util.LangUtil;
+
 public class Scope implements ControlBlock {
 	private List<Double> data = new ArrayList<>();
 
@@ -21,5 +23,10 @@ public class Scope implements ControlBlock {
 
 	public List<Double> getData() {
 		return data;
+	}
+
+	@Override
+	public String toString() {
+		return LangUtil.concatWithComma(LangUtil.toPrimitiveDoubleArray(data));
 	}
 }

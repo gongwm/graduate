@@ -18,7 +18,7 @@ public class Config {
 	double[] time = new double[n];
 
 	void config(double T, double t, double tt) {
-		this.t = T;
+		this.T = T;
 		this.t = t;
 		this.tt = tt;
 		n = (int) (tt / T) + 1;
@@ -32,8 +32,14 @@ public class Config {
 			time[i] = t;
 		}
 	}
-	
-	public double[] getTime(){
+
+	public double[] getTime() {
 		return time;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("step: %fs, total time: %fs, total step: %d", T,
+				tt, n);
 	}
 }

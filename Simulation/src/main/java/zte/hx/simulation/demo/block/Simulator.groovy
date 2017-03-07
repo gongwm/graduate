@@ -17,6 +17,8 @@ class Simulator {
 		}
 
 		model.lines.each{
+			println it
+
 			def start=components[it.value[0]]
 			def end=components[it.value[1]]
 			def line=new Line(start,end)
@@ -54,13 +56,11 @@ class Simulator {
 
 	private def adjustLine(){
 	}
-	
+
 	def findOutputs(){
-		return components.findAll {
-			return it.value instanceof Scope
-		}
+		return components.findAll { return it.value instanceof Scope }
 	}
-	
+
 	def getTime(){
 		return config.getTime();
 	}

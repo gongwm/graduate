@@ -21,4 +21,9 @@ public class Line {
 	boolean isPreLine(Line line) {
 		return this.end == line.start;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("connect line. from: %s, to: %s", start, end);
+	}
 }

@@ -40,7 +40,7 @@ function _drawLineChart(title, xName, yName, data, id, callback) {
 			type : 'line',
 			events : {
 				load : function() {
-					if (_.isFunction(callback)) {
+					if (typeof (callback) == 'function') {
 						callback(this.series);
 					}
 				}
