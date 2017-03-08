@@ -1,4 +1,5 @@
- <html>
+<!DOCTYPE html>
+<html>
 <head>
 
 <meta charset="utf-8">
@@ -12,114 +13,131 @@
 <script src="model.js"></script>
 
 <script type="text/javascript">
-function retFalse(){
-return false;
-}
+	function retFalse() {
+		return false;
+	}
 
-(function noselect(){
-if (typeof(document.onselectstart) != "undefined") {        
-  document.onselectstart = retFalse;
-} else {
-  document.onmousedown = retFalse;
-  document.onmouseup = retFalse;
-}
-})();
+	(function noselect() {
+		if (typeof (document.onselectstart) != "undefined") {
+			document.onselectstart = retFalse;
+		} else {
+			document.onmousedown = retFalse;
+			document.onmouseup = retFalse;
+		}
+	})();
 
-var svg,model;
+	var svg, model;
 
-$(function(){
+	$(function() {
+		svg = Snap("#svg");
 
-svg=Snap("#svg");
+		Model.predef(svg);
+		model = new Model(svg);
 
-Model.predef(svg);
-model=new Model(svg);
+		var types = Block.types;
 
-var types=Block.types;
+		var step = Block.step.use();
+		step.attr({
+			x : 80,
+			y : 10
+		});
+		step.data({
+			type : types.STEP
+		});
+		svg.paper.text(20, 30, "step");
 
-var step=Block.step.use();
-step.attr({x:80,y:10});
-step.data({type:types.STEP});
-svg.paper.text(20,30,"step");
+		var inertia = Block.inertia.use();
+		inertia.attr({
+			x : 80,
+			y : 60
+		});
+		inertia.data({
+			type : types.INERTIAL
+		});
+		svg.paper.text(20, 80, "inertia");
 
-var inertia=Block.inertia.use();
-inertia.attr({x:80,y:60});
-inertia.data({type:types.INERTIAL});
-svg.paper.text(20,80,"inertia");
+		var joint = Block.joint.use();
+		joint.attr({
+			x : 80,
+			y : 110
+		});
+		joint.data({
+			type : types.JOINT
+		});
+		svg.paper.text(20, 130, "joint");
 
-var joint=Block.joint.use();
-joint.attr({x:80,y:110});
-joint.data({type:types.JOINT});
-svg.paper.text(20,130,"joint");
+		var scope = Block.scope.use();
+		scope.attr({
+			x : 80,
+			y : 160
+		});
+		scope.data({
+			type : types.SCOPE
+		});
+		scope.paper.text(20, 180, 'scope');
 
-var scope=Block.scope.use();
-scope.attr({x:80,y:160});
-scope.data({type:types.SCOPE});
-scope.paper.text(20,180,'scope');
+		svg.add(step);
+		svg.add(inertia);
+		svg.add(joint);
+		svg.add(scope);
 
-svg.add(step);
-svg.add(inertia);
-svg.add(joint);
-svg.add(scope);
+		var temp = null, type = null, m = null, m0 = null;
 
-var temp=null,
-	type=null,
-	m=null,
-	m0=null;
+		[ step, inertia, joint, scope ].forEach(function(t) {
+			t.drag(function onmove(dx, dy, x, y, e) {
+				m.translate(m0.e + dx - m.e, m0.f + dy - m.f);
+				temp.transform(m);
+			}, function onstart(x, y, e) {
+				temp = t.clone();
+				type = t.data("type");
+				m = temp.transform().totalMatrix;
+				m0 = m.clone();
+				svg.append(temp);
+			}, function onend(e) {// 12 as adjustment
+				var x = +t.attr("x") + m.e + 12, y = +t.attr("y") + m.f + 12;
+				model.addBlock(x, y, type);
+				temp.remove();
+				temp = type = m = null;
+			});
+		});
 
-[step,inertia,joint,scope].forEach(function(t){
-	t.drag(function onmove(dx,dy,x,y,e){
-	m.translate(m0.e+dx-m.e,m0.f+dy-m.f);
-	temp.transform(m);
-},function onstart(x,y,e){
-	temp=t.clone();
-	type=t.data("type");
-	m=temp.transform().totalMatrix;
-	m0=m.clone();
-	svg.append(temp);
-},function onend(e){// 12 as adjustment
-	var x= +t.attr("x") + m.e+12,
-		y= +t.attr("y") + m.f+12;
-	model.addBlock(x,y,type);
-	temp.remove();
-	temp=type=m=null;
-});});
+		$("#bt_move").click(function() {
+			model.moveMode();
+		});
 
-$("#bt_move").click(function(){
-	model.moveMode();
-});
+		$("#bt_connect").click(function() {
+			model.connectMode();
+		});
 
-$("#bt_connect").click(function(){
-	model.connectMode();
-});
-
-$("#bt_simu").click(function(){
-	var url="";
-	var jm=model.toJsonModel();
-	console.log(jm);
-});
-
-});
-
+		$("#bt_simu").click(function() {
+			var url = "/Simulation/simulate.action";
+			var jm = model.toJsonModel();
+			console.log(jm);
+		});
+	});
 </script>
 
 </head>
 
 <body>
+	<button id="bt_move">移动</button>
+	<button id="bt_connect">连接</button>
+	<button id="bt_simu">计算</button>
+	<br />
 
-<button id="bt_move">移动</button>
-<button id="bt_connect">连接</button>
-<button id="bt_simu">计算</button>
-<br/>
+	<div style="height: 20px"></div>
 
-<div style="height:20px"></div>
+	<div style="height: 510px">
+		<div style="display: inline-block">
+			<svg id="svg"
+				style="width: 900px; height: 500px; border: 1px red solid;"></svg>
+		</div>
 
-<div height="500px">
-<div style="display:inline-block">
-	<svg id="svg" width="900" height="500" style="border:1px red solid;"></svg>
-</div>
+		<div
+			style="width: 200px; height: 500px; border: 1px blue solid; display: inline-block"></div>
+	</div>
 
-<div style="width:200px;height:500px;border:1px blue solid;display:inline-block"></div>
-</div>
-
+	<div id="img_out"
+		style="width: 500px; height: 400px; border: solid 1px green"></div>
 </body>
 </html>

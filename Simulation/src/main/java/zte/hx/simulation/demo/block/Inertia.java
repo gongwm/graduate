@@ -17,16 +17,6 @@ public class Inertia implements LinearBlock {
 		initRatio();
 	}
 
-	private void initRatio() {
-		c1 = pow(e, -config.T / t);
-		c2 = k * (1 - pow(e, -config.T / t));
-	}
-
-	void setConfig(Config config) {
-		this.config = config;
-		initRatio();
-	}
-
 	Block config(double... ds) {
 		k = ds[0];
 		t = ds[1];
@@ -34,8 +24,18 @@ public class Inertia implements LinearBlock {
 		return this;
 	}
 
+	private void initRatio() {
+		c1 = pow(e, -config.T / t);
+		c2 = k * (1 - pow(e, -config.T / t));
+	}
+
 	public void next(double input) {
 		output = c1 * output + c2 * input;
+	}
+
+	void setConfig(Config config) {
+		this.config = config;
+		initRatio();
 	}
 
 	public double getOutput() {

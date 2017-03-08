@@ -14,7 +14,7 @@ public class SimulationControllerTest {
 
 	@Before
 	public void prepare() {
-		String modelPath = "/zte/hx/simulation/demo/block/exciter_model.json";
+		String modelPath = "/zte/hx/action/demo/simple_model.json";
 		jsonModel = (String) IOUtil.readAsString(modelPath);
 	}
 
@@ -28,5 +28,4 @@ public class SimulationControllerTest {
 		double startZeroOfFirstSeries = ld.getData()[0].getData()[0][0];
 		assertEquals(0.0, startZeroOfFirstSeries, 0.01);
 	}
-
 }

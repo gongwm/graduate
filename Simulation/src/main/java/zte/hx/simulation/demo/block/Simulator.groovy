@@ -17,15 +17,10 @@ class Simulator {
 		}
 
 		model.lines.each{
-			println it
-
 			def start=components[it.value[0]]
 			def end=components[it.value[1]]
 			def line=new Line(start,end)
 			lines[it.key]=line
-			if(end instanceof Scope){
-				line.push(0,config.T)
-			}
 		}
 		model.components.each{
 			if(it.value.type=='joint'){

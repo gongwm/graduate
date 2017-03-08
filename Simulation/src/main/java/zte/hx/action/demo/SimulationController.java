@@ -13,6 +13,7 @@ import zte.hx.simulation.demo.block.Simulator;
 import zte.hx.tool.ui.highcharts.LineData;
 import zte.hx.tool.ui.highcharts.LineDataBuilder;
 import zte.hx.util.LangUtil;
+import zte.hx.util.TestUtil;
 
 @Controller
 public class SimulationController {
@@ -30,17 +31,17 @@ public class SimulationController {
 		Map<String, Scope> scopes = (Map<String, Scope>) simulator
 				.findOutputs();
 
-		scopes.forEach((name, scope) -> {
-			System.out.println(scope);
-		});
-
 		LineDataBuilder ldb = LineDataBuilder.createBuilder("out", "t/s", "y");
 		double[] time = (double[]) simulator.getTime();
 
 		scopes.forEach((name, scope) -> {
 			ldb.addSeries(name, time,
 					LangUtil.toPrimitiveDoubleArray(scope.getData()));
+
+			TestUtil.print("here we go!");
+			TestUtil.print(scope);
 		});
+
 		return ldb.build();
 	}
 }

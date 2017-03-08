@@ -8,12 +8,16 @@ public class Line {
 		super();
 		this.start = start;
 		this.end = end;
+		if (end instanceof Scope) {
+			((Scope) end).next(start.getOutput());
+		}
 	}
 
 	void push(int k, double T) {
 		if (start instanceof Source) {
 			((Source) start).next(k, T);
-		} else if (end instanceof ControlBlock) {
+		}
+		if (end instanceof ControlBlock) {
 			((ControlBlock) end).next(start.getOutput());
 		}
 	}
