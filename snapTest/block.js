@@ -3,6 +3,7 @@ function Block(){
 	this._svg=null;
 	this._model=null;
 	this.lines=[];
+	this.config=null;
 }
 
 Block._={};
@@ -11,10 +12,16 @@ var proto=Block.prototype,
 	allTypes=['Inertia','Joint','Step','Scope'],
 	options={PREDEF:'_predef',CREATE:'create'},
 	types={INERTIA:'Inertia',JOINT:'Joint',STEP:'Step',SCOPE:'Scope'},
-	_=Block._;
+	_=Block._,
+	configTypes={
+		TEXT_TYPE:'text',
+		INPUT_TYPE:'input',
+		SELECT_TYPE:'select'
+	};
 
 Block.options=options;
 Block.types=types;
+Block.configTypes=configTypes;
 
 function performOption(opt,type,args){
 	if(!type){
@@ -29,6 +36,48 @@ function performOption(opt,type,args){
 
 Block.perform=performOption;
 
+function config(id,name,value,type){ // object 'config'.
+	assert(contains(configTypes,type),'no such type');
+	return {
+		id:id,
+		name:name,
+		value:value,
+		type:type
+	};
+}
+_.config=config;
+
+function assert(bool,msg){
+	if(!bool){
+		if(msg){
+			console.log(msg);
+		}
+		throw new Error("assertion error");
+	}
+}
+_.assert=assert;
+
+function contains(array,item){
+	if(!item){
+		return false;
+	}
+	for(var i in array){
+		if(array[i]==item){
+			return true;
+		}
+	}
+	return false;
+}
+_.contains=contains;
+
+function format(str){
+	var args=arguments;
+	return str.replace(/\{(\d+)\}/g, function(m,i){
+		return args[i];
+	});
+}
+_.format=format;
+	
 function throwNotImplementedError(){
 	throw new Error("should be implemented by sub-class");
 }
@@ -138,6 +187,12 @@ proto.flip=function(){
 	this._redrawLines();
 };
 
+proto.getId=function(){
+	var id=this.id;
+	assert(id);
+	return id;
+}
+
 proto.basePoint=throwNotImplementedError;
 
 proto.lineAdded=function(line){
@@ -223,7 +278,8 @@ Inertia.prototype=new RectangleBase;
 Inertia.prototype.constructor=Inertia;
 
 var _idx=0,
-	proto=Inertia.prototype;
+	proto=Inertia.prototype,
+	config=Block._.config;
 
 Block.createInertia=function(){
 	return new Inertia;
@@ -298,6 +354,17 @@ proto.toModel=function(){
 	return {type:this.type,k: this._k,t:this._t};
 };
 
+
+proto.getConfig=function(){
+	// config: id, name, value, type
+	var configs=[];
+	configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
+	configs.push(config('k','K',this._k,configTypes.INPUT_TYPE));
+	configs.push(config('t','T',this._t,configTypes.INPUT_TYPE));
+	return configs;
+}
+
+
 return Inertia;
 });
 
@@ -316,7 +383,9 @@ var Joint=Block.plugin(function(Block,Snap){
 		CENTER_X=15,
 		CENTER_Y=15,
 		LINE_MODE_PLUS='+',
-		LINE_MODE_MINUS='-';
+		LINE_MODE_MINUS='-',
+		config=Block._.config,
+		configTypes=Block.configTypes;
 	
 	Block._predefJoint=function(svg){
 		var cx=CENTER_X,
@@ -391,6 +460,19 @@ var Joint=Block.plugin(function(Block,Snap){
 		}
 		return {type:this.type,lines:lines};
 	};
+	
+	proto.getConfig=function(){
+		// config: id, name, value, type
+		var configs=[],
+			lineMode=this.lineMode,
+			optionValues=[LINE_MODE_PLUS,LINE_MODE_MINUS];
+		configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
+		for(var i in lineMode){
+			var mode=lineMode[i];
+			configs.push(config(i,'line '+i,optionValues,configTypes.SELECT_TYPE));
+		}
+		return configs;
+	};
 
 	return Joint;
 });
@@ -408,7 +490,9 @@ Step.prototype.constructor=Step;
 
 var proto=Step.prototype,
 	_idx=0,
-	operationNotSupported=Block._.operationNotSupported;
+	operationNotSupported=Block._.operationNotSupported,
+	config=Block._.config,
+	configTypes=Block.configTypes;
 
 Block.step=null;
 
@@ -432,6 +516,13 @@ proto.toModel=function(){
 
 proto.inPoint=operationNotSupported;
 
+proto.getConfig=function(){
+	// config: id, name, value, type
+	var configs=[];
+	configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
+	return configs;
+}
+
 return Step;
 });
 
@@ -449,7 +540,9 @@ Scope.prototype.constructor=Scope;
 
 var proto=Scope.prototype,
 	_idx=0,
-	operationNotSupported=Block._.operationNotSupported;
+	operationNotSupported=Block._.operationNotSupported,
+	config=Block._.config,
+	configTypes=Block.configTypes;
 
 Block.Scope=null;
 
@@ -472,6 +565,13 @@ proto.toModel=function(){
 };
 
 proto.outPoint=operationNotSupported;
+
+proto.getConfig=function(){
+	// config: id, name, value, type
+	var configs=[];
+	configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
+	return configs;
+}
 
 return Scope;	
 });
