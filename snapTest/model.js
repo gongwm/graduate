@@ -4,8 +4,7 @@ var Model=(function(Block,Line){
 		this.config={type:'fixed',T:0.01,t:0.0,tt:10.0};
 		this.components={};
 		this.lines={};
-		this.b_idx=0;
-		this.l_idx=0;
+		this.selectedComponent=null;
 	}
 	
 	var proto=Model.prototype,
@@ -27,37 +26,29 @@ var Model=(function(Block,Line){
 		if(!type){
 			type=types.INERTIA;
 		}
-		var block=Block.perform(options.CREATE,type,x,y);
-		this.components[block.id]=block;
+		var block=Block.perform(options.CREATE,type,x,y),
+			model=this,
+			components=this.components;
+		components[block.id]=block;
 		block.attachToSvg(this.svg);
 		block.moveTo(x,y);
-		var model=this;
 		block.attachToModel(model);
 		block.moveMode();
+		block.removeMode();
 		return block;
 	};
 	
 	proto.removeBlock=function(id){
-		var block=components[id],
-			relatedLines=relatedLinesOf(block);
+		var components=this.components,
+			block=components[id],
+			relatedLines=block.lines;
 		block.detach();
-		components[id]=null;
+		delete components[id];
 		for(idx in relatedLines){
 			var lineId=relatedLines[idx]._id;
 			this.removeLine(lineId);
 		}
 	};
-	
-	function relatedLinesOf(block){
-		var lines=[];
-		for(id in lines){
-			var line=lines[id];
-			if(line._fromBlock==block||line._toBlock==block){
-				lines.push(line);
-			}
-		}
-		return lines;
-	}
 	
 	proto.find=function(id){
 		return model.components[id];
@@ -74,40 +65,46 @@ var Model=(function(Block,Line){
 			}
 		}
 		try{
-		var line=new Line(this.components[fromId],this.components[toId]);
-		
-		
+			var line=new Line(this.components[fromId],this.components[toId]);
+			
 		}catch(e){
 			alert(e.message);
 			return;
 		}
 		this.lines[line._id]=line;
 		line.attachToSvg(this.svg);
+		line.removeMode();
 		return line;
 	};
 	
 	proto.connect=proto.addLine;
 	
 	proto.removeLine=function(id){
-		var line=this.lines[id];
+		var lines=this.lines,
+			line=lines[id];
 		line.detach();
+		delete lines[id];
 	};
 	
-	proto.connectMode=function(){
+	proto.changeMode=function(mode){
 		var comps=this.components;
 		for(key in comps){
 			var comp=comps[key];
-			comp.connectMode();
+			comp[mode]();
 		}
+	};
+
+	proto.connectMode=function(){
+		this.changeMode('connectMode');
 	};
 	
 	proto.moveMode=function(){
-		var comps=this.components;
-		for(key in comps){
-			var comp=comps[key];
-			comp.moveMode();
-		}
+		this.changeMode('moveMode');
 	};
+	
+	proto.configMode=function(){
+		this.changeMode('configMode');
+	}
 	
 	proto.valid=function(){
 		// TO-DO

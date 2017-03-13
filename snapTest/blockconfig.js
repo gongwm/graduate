@@ -7,13 +7,15 @@ var BlockConfig=(function(jQuery){
 		this.configs=[];
 	}
 	
+	BlockConfig.configContainerId='config';
+	
 	var types=Block.configTypes;
 		divhtml='<div id="{1}">{2}</div>',
 		labelhtml='<label style="margin-right:10px">{1}</label>',
 		texthtml='{1}',
 		inputhtml='<input type="{1}" value="{2}" />',
 		selecthtml='<select required="true">{1}</select>',
-		optionhtml='<option value="{1}">{2}</option>',
+		optionhtml='<option value="{1}"{3}>{2}</option>',
 		DIV_POSTFIX='_config_div',
 		proto=BlockConfig.prototype;
 		blockproto=Block.prototype,
@@ -34,15 +36,19 @@ var BlockConfig=(function(jQuery){
 	}
 	
 	function makeInput(value){
-		return format(inputhtml,'input',value);
+		return format(inputhtml,'text',value);
 	}
 	
 	function makeSelect(options){
 		return format(selecthtml,options);
 	}
 	
-	function makeOption(value,txt){
-		return format(optionhtml,value,txt);
+	function makeOption(value,txt,selected){
+		var attr='';
+		if(selected){
+			attr=' selected="selected"';
+		}
+		return format(optionhtml,value,txt,attr);
 	}
 	
 	function makeDiv(id,content){
@@ -61,14 +67,17 @@ var BlockConfig=(function(jQuery){
 		var i=makeInput(config.value);
 		return makeDiv(config.id,l+i);
 	}
-	
+		
 	function select(config){
 		var options='',
 			name=config.name,
-			values=config.value;
+			value=config.value,
+			data=config.data;
+		
 		var l=makeLabel(name);
-		for(var i in values){
-			options+=makeOption(values[i],values[i]);
+		for(var i in data){
+			var d=data[i];
+			options+=makeOption(d,d,d==value);
 		}
 		var s=makeSelect(options);
 		return makeDiv(config.id,l+s);
@@ -92,6 +101,22 @@ var BlockConfig=(function(jQuery){
 				throw 'impossble';
 		}
 		return fun(config);
+	}
+	
+	function resolveConfig(config){
+		var id=config.id,
+			selector=format('#{1} {2}',id,config.type);
+			value=$(selector).val();
+		config.value=value;
+	}
+	
+	function update(configs){
+		for(var i in configs){
+			var config=configs[i];
+			if(config.type!=types.TEXT_TYPE){
+				resolveConfig(config);
+			}
+		}
 	}
 	
 	
@@ -122,35 +147,52 @@ var BlockConfig=(function(jQuery){
 	proto.build=proto.appendTo; // alias
 
 	proto.update=function(){
-		var divId=this.id,
-			configs=this.configs;
-		for(var i in configs){
-			var config=configs[i],
-				id=config.id,
-				selector=format("#{1} {2}",divId,id);
-			if(config.type==types.INPUT_TYPE||config.type==types.SELECT_TYPE){
-				config.value=$(selector).val();
-			}
+		var configs=this.configs;
+		if(configs){
+			update(configs);
 		}
+		return configs;
 	}
-	
-	
+		
 	blockproto.getConfig=methodNotImplemented; // return configs
-	blockproto.updateConfig=methodNotImplemented; // update by configs
+	blockproto.updateConfig=function(){
+		console.log('default update config called');
+	}; // update by configs
 	
-	blockproto.showConfig=function(containerId){
-		var config=this.config=new BlockConfig(this.getId());
-		var cs=this.getConfig();
+	blockproto.showConfig=function(){
+		var config=this.config=new BlockConfig(this.getId()),
+			cs=this.getConfig(),
+			containerId=BlockConfig.configContainerId;
 		for(var k in cs){
-			var c=cs[k];
-			config.addConfig(c);
+			config.addConfig(cs[k]);
 		}
 		config.build(containerId);
 	}
+	
+	blockproto.update=function(){
+		var config=this.config,
+			block=this;
+		config.update();
+		block.updateConfig();
+	}
+	
+	
+	blockproto.configMode=function(){
+		var block=this.block,
+			model=this._model,
+			_this=this;
+		block.undrag();
+		block.unclick();
+		block.click(function(){
+			var lastComp=model.selectedComponent;
+			model.selectedComponent=_this;
+			lastComp&&lastComp.update();
+			_this.showConfig();
+		});
+	};
 
 	return BlockConfig;
-		
-		
+	
 	});
 	
 	

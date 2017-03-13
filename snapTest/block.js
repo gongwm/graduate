@@ -36,13 +36,14 @@ function performOption(opt,type,args){
 
 Block.perform=performOption;
 
-function config(id,name,value,type){ // object 'config'.
+function config(id,name,value,type,data){ // object 'config'.
 	assert(contains(configTypes,type),'no such type');
 	return {
 		id:id,
 		name:name,
 		value:value,
-		type:type
+		type:type,
+		data:data||{}
 	};
 }
 _.config=config;
@@ -107,6 +108,15 @@ proto.addLine=function(line){
 	this.lines.push(line);
 };
 
+proto.removeLine=function(line){
+	var lines=this.lines,
+		idx=lines.indexOf(line);
+	if(idx!=-1){
+		return lines.splice(idx,1);
+	}
+	return null;
+}
+
 proto.attachToSvg=function(svg){
 	this._svg=svg;
 	svg.append(this.block);
@@ -120,8 +130,18 @@ proto.detach=function(){
 	this._svg=null;
 	this._model=null;
 	this.lines=[];
+	this.block.remove();
 };
-	
+
+proto.removeMode=function(){
+	var block=this.block,
+		id=this.id,
+		model=this._model;
+	block.dblclick(function(){
+		model.removeBlock(id);
+	});
+};
+
 proto.moveMode=function(){
 	var block=this.block,
 		lines=this.lines,
@@ -149,11 +169,12 @@ proto.connectMode=function(){
 		line=Snap.parse("<line></line>").select("line")
 			.attr({stroke:'black','stroke-dasharray':'3,3',x1:center.x,y1:center.y}),
 		svg=this._svg,
+		container=svg.node.parentElement,
 		_this=this;
 	block.undrag();
 	
 	block.drag(function onmove(dx,dy,x,y,e){
-		line.attr({x2:x-5,y2:y-5});
+		line.attr({x2:x-container.offsetLeft,y2:y-container.offsetTop});
 	},function onstart(x,y,e){
 		svg.append(line);
 		line.attr({x2:x,y2:y});
@@ -165,7 +186,6 @@ proto.connectMode=function(){
 		line.remove();
 		if(id in model.components){
 			var l=model.addLine(_this.id,id);
-			model.find(id).lineAdded(l);
 		}
 	});
 	return this;
@@ -359,11 +379,16 @@ proto.getConfig=function(){
 	// config: id, name, value, type
 	var configs=[];
 	configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
-	configs.push(config('k','K',this._k,configTypes.INPUT_TYPE));
-	configs.push(config('t','T',this._t,configTypes.INPUT_TYPE));
+	configs.push(config('_k','K',this._k,configTypes.INPUT_TYPE));
+	configs.push(config('_t','T',this._t,configTypes.INPUT_TYPE));
 	return configs;
-}
+};
 
+proto.updateConfig=function(){
+	var configs=this.config.configs;
+	this._k=configs[1].value;
+	this._t=configs[2].value;
+};
 
 return Inertia;
 });
@@ -462,17 +487,26 @@ var Joint=Block.plugin(function(Block,Snap){
 	};
 	
 	proto.getConfig=function(){
-		// config: id, name, value, type
+		// config: id, name, value, type, data
 		var configs=[],
 			lineMode=this.lineMode,
 			optionValues=[LINE_MODE_PLUS,LINE_MODE_MINUS];
 		configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
 		for(var i in lineMode){
 			var mode=lineMode[i];
-			configs.push(config(i,'line '+i,optionValues,configTypes.SELECT_TYPE));
+			configs.push(config(i,'line '+i,mode,configTypes.SELECT_TYPE,optionValues));
 		}
 		return configs;
 	};
+	
+	proto.updateConfig=function(){
+		var configs=this.config.configs.slice(1),
+			lineMode=this.lineMode;
+		for(var i in configs){
+			var config=configs[i];
+			lineMode[config.id]=config.value;
+		}
+	}
 
 	return Joint;
 });
