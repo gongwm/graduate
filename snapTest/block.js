@@ -115,7 +115,7 @@ proto.removeLine=function(line){
 		return lines.splice(idx,1);
 	}
 	return null;
-}
+};
 
 proto.attachToSvg=function(svg){
 	this._svg=svg;
@@ -211,7 +211,7 @@ proto.getId=function(){
 	var id=this.id;
 	assert(id);
 	return id;
-}
+};
 
 proto.basePoint=throwNotImplementedError;
 
@@ -506,7 +506,7 @@ var Joint=Block.plugin(function(Block,Snap){
 			var config=configs[i];
 			lineMode[config.id]=config.value;
 		}
-	}
+	};
 
 	return Joint;
 });
@@ -555,7 +555,7 @@ proto.getConfig=function(){
 	var configs=[];
 	configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
 	return configs;
-}
+};
 
 return Step;
 });
@@ -605,7 +605,7 @@ proto.getConfig=function(){
 	var configs=[];
 	configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
 	return configs;
-}
+};
 
 return Scope;	
 });

@@ -104,7 +104,7 @@ var Model=(function(Block,Line){
 	
 	proto.configMode=function(){
 		this.changeMode('configMode');
-	}
+	};
 	
 	proto.valid=function(){
 		// TO-DO

@@ -152,7 +152,7 @@ var BlockConfig=(function(jQuery){
 			update(configs);
 		}
 		return configs;
-	}
+	};
 		
 	blockproto.getConfig=methodNotImplemented; // return configs
 	blockproto.updateConfig=function(){
@@ -167,14 +167,14 @@ var BlockConfig=(function(jQuery){
 			config.addConfig(cs[k]);
 		}
 		config.build(containerId);
-	}
+	};
 	
 	blockproto.update=function(){
 		var config=this.config,
 			block=this;
 		config.update();
 		block.updateConfig();
-	}
+	};
 	
 	
 	blockproto.configMode=function(){

@@ -22,9 +22,11 @@ var Line=(function(Snap){
 		this._fromBlock=fromBlock;
 		this._toBlock=toBlock;
 		this._path=draw(fromBlock,toBlock);
+		this._model=fromBlock._model;
 		
 		fromBlock.lines.push(this);
 		toBlock.lines.push(this);
+		toBlock.lineAdded(this);
 	}
 	
 	function draw(fromBlock,toBlock){
@@ -54,8 +56,21 @@ var Line=(function(Snap){
 	proto.detach=function(){
 		this._path.remove();
 		this._path=null;
+		
+		this._fromBlock.removeLine(this);
+		this._toBlock.removeLine(this);
+		
 		this._fromBlock=null;
 		this._toBlock=null;
+	};
+	
+	proto.removeMode=function(){
+		var path=this._path,
+			id=this._id,
+			model=this._model;
+		path.dblclick(function(){
+			model.removeLine(id);
+		});
 	};
 	
 	proto.redraw=function(){

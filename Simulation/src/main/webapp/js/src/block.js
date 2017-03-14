@@ -3,6 +3,7 @@ function Block(){
 	this._svg=null;
 	this._model=null;
 	this.lines=[];
+	this.config=null;
 }
 
 Block._={};
@@ -11,10 +12,16 @@ var proto=Block.prototype,
 	allTypes=['Inertia','Joint','Step','Scope'],
 	options={PREDEF:'_predef',CREATE:'create'},
 	types={INERTIA:'Inertia',JOINT:'Joint',STEP:'Step',SCOPE:'Scope'},
-	_=Block._;
+	_=Block._,
+	configTypes={
+		TEXT_TYPE:'text',
+		INPUT_TYPE:'input',
+		SELECT_TYPE:'select'
+	};
 
 Block.options=options;
 Block.types=types;
+Block.configTypes=configTypes;
 
 function performOption(opt,type,args){
 	if(!type){
@@ -29,6 +36,49 @@ function performOption(opt,type,args){
 
 Block.perform=performOption;
 
+function config(id,name,value,type,data){ // object 'config'.
+	assert(contains(configTypes,type),'no such type');
+	return {
+		id:id,
+		name:name,
+		value:value,
+		type:type,
+		data:data||{}
+	};
+}
+_.config=config;
+
+function assert(bool,msg){
+	if(!bool){
+		if(msg){
+			console.log(msg);
+		}
+		throw new Error("assertion error");
+	}
+}
+_.assert=assert;
+
+function contains(array,item){
+	if(!item){
+		return false;
+	}
+	for(var i in array){
+		if(array[i]==item){
+			return true;
+		}
+	}
+	return false;
+}
+_.contains=contains;
+
+function format(str){
+	var args=arguments;
+	return str.replace(/\{(\d+)\}/g, function(m,i){
+		return args[i];
+	});
+}
+_.format=format;
+	
 function throwNotImplementedError(){
 	throw new Error("should be implemented by sub-class");
 }
@@ -58,6 +108,15 @@ proto.addLine=function(line){
 	this.lines.push(line);
 };
 
+proto.removeLine=function(line){
+	var lines=this.lines,
+		idx=lines.indexOf(line);
+	if(idx!=-1){
+		return lines.splice(idx,1);
+	}
+	return null;
+};
+
 proto.attachToSvg=function(svg){
 	this._svg=svg;
 	svg.append(this.block);
@@ -71,8 +130,18 @@ proto.detach=function(){
 	this._svg=null;
 	this._model=null;
 	this.lines=[];
+	this.block.remove();
 };
-	
+
+proto.removeMode=function(){
+	var block=this.block,
+		id=this.id,
+		model=this._model;
+	block.dblclick(function(){
+		model.removeBlock(id);
+	});
+};
+
 proto.moveMode=function(){
 	var block=this.block,
 		lines=this.lines,
@@ -100,11 +169,12 @@ proto.connectMode=function(){
 		line=Snap.parse("<line></line>").select("line")
 			.attr({stroke:'black','stroke-dasharray':'3,3',x1:center.x,y1:center.y}),
 		svg=this._svg,
+		container=svg.node.parentElement,
 		_this=this;
 	block.undrag();
 	
 	block.drag(function onmove(dx,dy,x,y,e){
-		line.attr({x2:x-5,y2:y-5});
+		line.attr({x2:x-container.offsetLeft,y2:y-container.offsetTop});
 	},function onstart(x,y,e){
 		svg.append(line);
 		line.attr({x2:x,y2:y});
@@ -116,7 +186,6 @@ proto.connectMode=function(){
 		line.remove();
 		if(id in model.components){
 			var l=model.addLine(_this.id,id);
-			model.find(id).lineAdded(l);
 		}
 	});
 	return this;
@@ -136,6 +205,12 @@ proto.flip=function(){
 	m.rotate(180,bp.x,bp.y);
 	block.transform(m);
 	this._redrawLines();
+};
+
+proto.getId=function(){
+	var id=this.id;
+	assert(id);
+	return id;
 };
 
 proto.basePoint=throwNotImplementedError;
@@ -223,7 +298,8 @@ Inertia.prototype=new RectangleBase;
 Inertia.prototype.constructor=Inertia;
 
 var _idx=0,
-	proto=Inertia.prototype;
+	proto=Inertia.prototype,
+	config=Block._.config;
 
 Block.createInertia=function(){
 	return new Inertia;
@@ -298,6 +374,22 @@ proto.toModel=function(){
 	return {type:this.type,k: this._k,t:this._t};
 };
 
+
+proto.getConfig=function(){
+	// config: id, name, value, type
+	var configs=[];
+	configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
+	configs.push(config('_k','K',this._k,configTypes.INPUT_TYPE));
+	configs.push(config('_t','T',this._t,configTypes.INPUT_TYPE));
+	return configs;
+};
+
+proto.updateConfig=function(){
+	var configs=this.config.configs;
+	this._k=configs[1].value;
+	this._t=configs[2].value;
+};
+
 return Inertia;
 });
 
@@ -316,7 +408,9 @@ var Joint=Block.plugin(function(Block,Snap){
 		CENTER_X=15,
 		CENTER_Y=15,
 		LINE_MODE_PLUS='+',
-		LINE_MODE_MINUS='-';
+		LINE_MODE_MINUS='-',
+		config=Block._.config,
+		configTypes=Block.configTypes;
 	
 	Block._predefJoint=function(svg){
 		var cx=CENTER_X,
@@ -391,6 +485,28 @@ var Joint=Block.plugin(function(Block,Snap){
 		}
 		return {type:this.type,lines:lines};
 	};
+	
+	proto.getConfig=function(){
+		// config: id, name, value, type, data
+		var configs=[],
+			lineMode=this.lineMode,
+			optionValues=[LINE_MODE_PLUS,LINE_MODE_MINUS];
+		configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
+		for(var i in lineMode){
+			var mode=lineMode[i];
+			configs.push(config(i,'line '+i,mode,configTypes.SELECT_TYPE,optionValues));
+		}
+		return configs;
+	};
+	
+	proto.updateConfig=function(){
+		var configs=this.config.configs.slice(1),
+			lineMode=this.lineMode;
+		for(var i in configs){
+			var config=configs[i];
+			lineMode[config.id]=config.value;
+		}
+	};
 
 	return Joint;
 });
@@ -408,7 +524,9 @@ Step.prototype.constructor=Step;
 
 var proto=Step.prototype,
 	_idx=0,
-	operationNotSupported=Block._.operationNotSupported;
+	operationNotSupported=Block._.operationNotSupported,
+	config=Block._.config,
+	configTypes=Block.configTypes;
 
 Block.step=null;
 
@@ -432,6 +550,13 @@ proto.toModel=function(){
 
 proto.inPoint=operationNotSupported;
 
+proto.getConfig=function(){
+	// config: id, name, value, type
+	var configs=[];
+	configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
+	return configs;
+};
+
 return Step;
 });
 
@@ -449,7 +574,9 @@ Scope.prototype.constructor=Scope;
 
 var proto=Scope.prototype,
 	_idx=0,
-	operationNotSupported=Block._.operationNotSupported;
+	operationNotSupported=Block._.operationNotSupported,
+	config=Block._.config,
+	configTypes=Block.configTypes;
 
 Block.Scope=null;
 
@@ -472,6 +599,13 @@ proto.toModel=function(){
 };
 
 proto.outPoint=operationNotSupported;
+
+proto.getConfig=function(){
+	// config: id, name, value, type
+	var configs=[];
+	configs.push(config('id','id',this.id,configTypes.TEXT_TYPE));
+	return configs;
+};
 
 return Scope;	
 });
