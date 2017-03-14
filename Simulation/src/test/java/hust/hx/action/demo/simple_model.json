@@ -1,0 +1,31 @@
+{
+	"config": {
+		"type": "fixed",
+		"T": 0.01,
+		"t": 0,
+		"tt": 10
+	},
+	"components": {
+		"s1": {
+			"type": "step"
+		},
+		"b1": {
+			"type": "inertia",
+			"k": 1,
+			"t": 1
+		},
+		"sc1": {
+			"type": "scope"
+		}
+	},
+	"lines": {
+		"l1": [
+			"s1",
+			"b1"
+		],
+		"l2": [
+			"b1",
+			"sc1"
+		]
+	}
+}
