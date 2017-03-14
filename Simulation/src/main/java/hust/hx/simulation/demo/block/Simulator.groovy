@@ -67,11 +67,11 @@ class BlockFactory{
 			case 'joint':
 					b=new Joint();break;
 			case 'inertia':
-					b=new Inertia().config(info.k,info.t);break;
+					b=new Inertia().config(info.k as double,info.t as double);break;
 			case 'amplifier':
-					b=new Amplifier(info.k);break;
+					b=new Amplifier(info.k as double);break;
 			case 'limiter':
-					b=new Limiter(info.upper,info.lower);break;
+					b=new Limiter(info.upper as double,info.lower as double);break;
 			case 'scope':
 					b=new Scope();break;
 			default: throw new IllegalArgumentException('no such model');break;

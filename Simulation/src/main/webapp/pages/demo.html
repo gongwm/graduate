@@ -15,26 +15,19 @@
 	src="/Simulation/js/chart/highcharts_util.js"></script>
 
 <script type="text/javascript">
-	function retFalse() {
-		return false;
-	}
-
-	(function noselect() {
-		if (typeof (document.onselectstart) != "undefined") {
-			document.onselectstart = retFalse;
-		} else {
-			document.onmousedown = retFalse;
-			document.onmouseup = retFalse;
-		}
-	})();
-
-	var svg, model;
+	var svg, model, b1, j1;
 
 	$(function() {
 		svg = Snap("#svg");
 
 		Model.predef(svg);
 		model = new Model(svg);
+		b1 = model.addBlock(200, 100, Block.types.INERTIAL);
+		b1.showConfig('config');
+
+		j1 = model.addBlock(300, 100, Block.types.JOINT);
+
+		model.addLine(b1.id, j1.id);
 
 		var types = Block.types;
 
@@ -111,6 +104,10 @@
 			model.connectMode();
 		});
 
+		$('#bt_config').click(function() {
+			model.configMode();
+		});
+
 		$("#bt_simu").click(function() {
 			var url = "/Simulation/simulate.action";
 			var jm = model.toJsonModel();
@@ -118,7 +115,7 @@
 			$.post(url, {
 				model : jm
 			}, function(data) {
-				drawPic("img_out", data);
+				drawPic('img_out', data);
 			});
 		});
 	});
@@ -130,21 +127,21 @@
 	<button id="bt_move">移动</button>
 	<button id="bt_connect">连接</button>
 	<button id="bt_simu">计算</button>
+	<button id="bt_config">配置</button>
 	<br />
 
 	<div style="height: 20px"></div>
 
-	<div style="height: 510px">
-		<div style="display: inline-block">
-			<svg id="svg"
-				style="width: 900px; height: 500px; border: 1px red solid;"></svg>
-		</div>
-
-		<div
-			style="width: 200px; height: 500px; border: 1px blue solid; display: inline-block"></div>
+	<div id="container">
+		<svg id="svg"
+			style="width: 900px; height: 500px; border: 1px red solid;"></svg>
 	</div>
 
+
+	<div id="config"
+		style="width: 900px; height: 200px; border: 1px blue solid;"></div>
+
 	<div id="img_out"
-		style="width: 500px; height: 400px; border: solid 1px green"></div>
+		style="width: 600px; height: 400px; border: solid 1px green"></div>
 </body>
 </html>
