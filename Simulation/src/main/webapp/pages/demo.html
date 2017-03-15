@@ -22,12 +22,6 @@
 
 		Model.predef(svg);
 		model = new Model(svg);
-		b1 = model.addBlock(200, 100, Block.types.INERTIAL);
-		b1.showConfig('config');
-
-		j1 = model.addBlock(300, 100, Block.types.JOINT);
-
-		model.addLine(b1.id, j1.id);
 
 		var types = Block.types;
 
@@ -134,14 +128,15 @@
 
 	<div id="container">
 		<svg id="svg"
-			style="width: 900px; height: 500px; border: 1px red solid;"></svg>
+			style="width: 900px; height: 500px; border: 1px red solid; position: relative; float: left; margin: 5px"></svg>
 	</div>
+
+	<div id="img_out"
+		style="width: 700px; height: 500px; border: solid 1px green; position: relative; padding: 1px; float: left; margin: 5px"></div>
 
 
 	<div id="config"
-		style="width: 900px; height: 200px; border: 1px blue solid;"></div>
+		style="width: 890px; height: 200px; border: 1px blue solid; position: relative; float: left; padding: 5px; margin: 5px"></div>
 
-	<div id="img_out"
-		style="width: 600px; height: 400px; border: solid 1px green"></div>
 </body>
 </html>

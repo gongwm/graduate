@@ -13,7 +13,6 @@ import hust.hx.simulation.demo.block.Simulator;
 import hust.hx.tool.ui.highcharts.LineData;
 import hust.hx.tool.ui.highcharts.LineDataBuilder;
 import hust.hx.util.LangUtil;
-import hust.hx.util.TestUtil;
 
 @Controller
 public class SimulationController {
@@ -37,9 +36,6 @@ public class SimulationController {
 		scopes.forEach((name, scope) -> {
 			ldb.addSeries(name, time,
 					LangUtil.toPrimitiveDoubleArray(scope.getData()));
-
-			TestUtil.print("here we go!");
-			TestUtil.print(scope);
 		});
 
 		return ldb.build();
