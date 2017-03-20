@@ -1,0 +1,38 @@
+a(1+b*s)/(1+c*s)
+
+思路：转化为已有的model
+             |----    x    ----|
+input----a---+                 +----> out
+             |----y/(1+c*s)----| 
+
+in 为输入line传入
+out 可以借助内置的line及其他部件的逻辑来计算
+
+Block b1=new Amp(a);
+Block b2=new Amp(x);
+Block b3=new Inertia(y,c);
+Block b4=new Joint();
+
+Line l1=new Line(b1,b2);
+Line l2=new Line(b1,b3);
+
+Line l3=new Line(b2,b4);
+Line l4=new Line(b3,b4);
+
+ComplexBlock cb=new ComplexBlock();
+
+l1.push()
+l2.push()
+
+components:{
+
+cb:{
+	components:{
+		b1,b2,b3,b4
+	},
+	lines:{
+		l1,l2,l3,l4
+	}
+}
+
+}
