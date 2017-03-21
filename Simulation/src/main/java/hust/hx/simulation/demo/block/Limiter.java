@@ -1,10 +1,9 @@
 package hust.hx.simulation.demo.block;
 
 public class Limiter implements NonlinearBlock {
-	private double upperBound;
-	private double lowerBound;
+	private double upperBound, lowerBound;
 
-	double output;
+	private double lastOutput, newOutput;
 
 	Limiter(double upperBound, double lowerBound) {
 		this.upperBound = upperBound;
@@ -17,19 +16,24 @@ public class Limiter implements NonlinearBlock {
 	}
 
 	@Override
-	public double getOutput() {
-		return output;
+	public double getLastOutput() {
+		return lastOutput;
 	}
 
 	@Override
 	public void next(double input) {
 		if (input > upperBound) {
-			output = upperBound;
+			newOutput = upperBound;
 		} else if (input < lowerBound) {
-			output = lowerBound;
+			newOutput = lowerBound;
 		} else {
-			output = input;
+			newOutput = input;
 		}
+	}
+
+	@Override
+	public void moveOn() {
+		lastOutput = newOutput;
 	}
 
 }

@@ -4,7 +4,8 @@ public class Integrator implements ControlBlock {
 	Config config = Config.DEFAULT_CONFIG;
 	private double k = 2;
 
-	private double output = 0.0;
+	private double lastOutput = 0.0;
+	private double newOutput;
 
 	private double c;
 
@@ -13,12 +14,17 @@ public class Integrator implements ControlBlock {
 	}
 
 	@Override
-	public double getOutput() {
-		return output;
+	public double getLastOutput() {
+		return lastOutput;
 	}
 
 	@Override
 	public void next(double input) {
-		output = output + c * input;
+		newOutput = lastOutput + c * input;
+	}
+
+	@Override
+	public void moveOn() {
+		lastOutput = newOutput;
 	}
 }

@@ -7,7 +7,7 @@ import hust.hx.simulation.demo.block.Config;
 import hust.hx.simulation.demo.block.ControlBlock;
 import hust.hx.simulation.demo.block.Inertia;
 import hust.hx.simulation.demo.block.Integrator;
-import hust.hx.simulation.demo.block.Joint;
+import hust.hx.simulation.demo.block.Adder;
 import hust.hx.simulation.demo.block.Line;
 import hust.hx.simulation.demo.block.Source;
 import hust.hx.simulation.demo.block.StepSource;
@@ -19,7 +19,8 @@ import hust.hx.util.TestUtil;
  * step->joint->inertia->integrator--->
  *         ^                        |
  *         |________________________|
- *  </pre>       
+ * </pre>
+ * 
  * @author hx
  *
  */
@@ -28,7 +29,7 @@ public class ClosedTest {
 		Config config = Config.DEFAULT_CONFIG;
 
 		Source step = new StepSource();
-		Joint joint = new Joint();
+		Adder joint = new Adder();
 		ControlBlock inertia = new Inertia();
 		ControlBlock integrator = new Integrator();
 
@@ -37,17 +38,17 @@ public class ClosedTest {
 		Line line3 = new Line(inertia, integrator);
 		Line line4 = new Line(integrator, joint);
 
-		joint.addLine(line1, Joint.ADD);
-		joint.addLine(line4, Joint.SUB);
+		joint.addLine(line1, Adder.ADD);
+		joint.addLine(line4, Adder.SUB);
 
 		List<Double> out = new ArrayList<>();
 		TestUtil.timeIt(() -> {
-			config.iterate((i, k) -> {
-				line1.push(i, k);
-				line2.push(i, k);
-				line3.push(i, k);
-				line4.push(i, k);
-				out.add(integrator.getOutput());
+			config.iterate(() -> {
+				line1.push();
+				line2.push();
+				line3.push();
+				line4.push();
+				out.add(integrator.getLastOutput());
 			});
 		});
 		TestUtil.print(out.size());

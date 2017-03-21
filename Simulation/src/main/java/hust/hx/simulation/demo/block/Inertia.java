@@ -8,7 +8,8 @@ public class Inertia implements LinearBlock {
 	double k = 1.0;
 	double t = 0.1;
 
-	private double output = 0.0;
+	private double lastOutput = 0.0;
+	private double newOutput;
 
 	private double c1;
 	private double c2;
@@ -17,7 +18,7 @@ public class Inertia implements LinearBlock {
 		initRatio();
 	}
 
-	Block config(double... ds) {
+	LinearBlock config(double... ds) {
 		k = ds[0];
 		t = ds[1];
 		initRatio();
@@ -30,7 +31,7 @@ public class Inertia implements LinearBlock {
 	}
 
 	public void next(double input) {
-		output = c1 * output + c2 * input;
+		newOutput = c1 * lastOutput + c2 * input;
 	}
 
 	void setConfig(Config config) {
@@ -38,8 +39,12 @@ public class Inertia implements LinearBlock {
 		initRatio();
 	}
 
-	public double getOutput() {
-		return output;
+	public double getLastOutput() {
+		return lastOutput;
+	}
+
+	public void moveOn() {
+		lastOutput = newOutput;
 	}
 
 	@Override

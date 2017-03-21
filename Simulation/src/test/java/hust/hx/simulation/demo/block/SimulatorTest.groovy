@@ -7,7 +7,7 @@ import hust.hx.util.groovy.IOUtil
 
 class SimulatorTest {
 	static def main(args){
-		def modelStr=IOUtil.readAsString('/zte/hx/simulation/demo/block/exciter_model.json')
+		def modelStr=IOUtil.readAsString('/hust/hx/simulation/demo/block/exciter_model.json')
 		def model=new JsonSlurper().parseText(modelStr)
 		println model
 

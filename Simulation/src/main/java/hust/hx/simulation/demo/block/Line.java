@@ -9,21 +9,22 @@ public class Line {
 		this.start = start;
 		this.end = end;
 		if (end instanceof Scope) {
-			((Scope) end).next(start.getOutput());
+			Scope s = (Scope) end;
+			s.next(start.getLastOutput());
+			s.moveOn();
 		}
 	}
 
-	void push(int k, double T) {
+	void push() {
 		if (start instanceof Source) {
-			((Source) start).next(k, T);
+			((Source) start).next();
 		}
 		if (end instanceof ControlBlock) {
-			((ControlBlock) end).next(start.getOutput());
+			((ControlBlock) end).next(start.getLastOutput());
 		}
-	}
-
-	boolean isPreLine(Line line) {
-		return this.end == line.start;
+		if (end instanceof Joint) {
+			((Joint) end).next();
+		}
 	}
 
 	@Override

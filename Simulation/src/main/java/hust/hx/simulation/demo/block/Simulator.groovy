@@ -21,7 +21,7 @@ class Simulator {
 		}
 		model.components.each{
 			if(it.value.type=='joint'){
-				def joint=components[it.key] as Joint
+				def joint=components[it.key] as Adder
 				it.value.lines.each{
 					joint.addLine(lines[it.key],it.value as char)
 				}
@@ -39,6 +39,9 @@ class Simulator {
 		config.iterate{i,k->
 			lines.each{
 				it.value.push(i,k)
+			}
+			components.each{
+				it.value.moveOn()
 			}
 		}
 	}
@@ -65,7 +68,7 @@ class BlockFactory{
 			case 'step':
 					b=new StepSource();break;
 			case 'joint':
-					b=new Joint();break;
+					b=new Adder();break;
 			case 'inertia':
 					b=new Inertia().config(info.k as double,info.t as double);break;
 			case 'amplifier':

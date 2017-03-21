@@ -1,11 +1,15 @@
 package hust.hx.simulation.demo.block;
 
 public class StepSource implements Source {
-	public double getOutput() {
+	public double getLastOutput() {
 		return 1.0;
 	}
 
 	@Override
-	public void next(int k, double T) {
+	public void next() {
+	}
+
+	@Override
+	public void moveOn() {
 	}
 }

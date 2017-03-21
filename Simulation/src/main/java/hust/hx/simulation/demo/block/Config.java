@@ -28,7 +28,7 @@ public class Config {
 	void iterate(Once once) {
 		for (int i = 1; i < n; ++i) {
 			t += T;
-			once.step(i, t);
+			once.step();
 			time[i] = t;
 		}
 	}

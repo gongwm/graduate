@@ -21,9 +21,13 @@ public class SimpleTest {
 		Line l1 = new Line(b1, b2);
 		Line l2 = new Line(b2, b3);
 
-		config.iterate((i, k) -> {
-			l1.push(i, k);
-			l2.push(i, k);
+		config.iterate(() -> {
+			l1.push();
+			l2.push();
+			
+			b1.moveOn();
+			b2.moveOn();
+			b3.moveOn();
 		});
 
 		TestUtil.print(b3);

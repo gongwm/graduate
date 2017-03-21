@@ -8,7 +8,7 @@ import hust.hx.simulation.demo.block.Amplifier;
 import hust.hx.simulation.demo.block.Block;
 import hust.hx.simulation.demo.block.Config;
 import hust.hx.simulation.demo.block.Inertia;
-import hust.hx.simulation.demo.block.Joint;
+import hust.hx.simulation.demo.block.Adder;
 import hust.hx.simulation.demo.block.Limiter;
 import hust.hx.simulation.demo.block.Line;
 import hust.hx.simulation.demo.block.Source;
@@ -21,10 +21,10 @@ public class ExciterTest {
 		Config config = new Config();
 
 		Source stepSource = new StepSource();
-		Joint j1 = new Joint();
+		Adder j1 = new Adder();
 		Block b1 = new Inertia().config(40, 0.1);
 		Block b2 = new Limiter(30);
-		Joint j2 = new Joint();
+		Adder j2 = new Adder();
 		Block b3 = new Inertia().config(-20, -10);
 		Block b4 = new Amplifier(0.01);
 		Block b5 = new Inertia().config(1, 1);
@@ -41,21 +41,21 @@ public class ExciterTest {
 		Line l9 = new Line(b5, b6);
 		Line l10 = new Line(b6, j1);
 
-		j1.addLine(l1, Joint.ADD);
-		j1.addLine(l10, Joint.SUB);
+		j1.addLine(l1, Adder.ADD);
+		j1.addLine(l10, Adder.SUB);
 
-		j2.addLine(l4, Joint.ADD);
-		j2.addLine(l7, Joint.SUB);
+		j2.addLine(l4, Adder.ADD);
+		j2.addLine(l7, Adder.SUB);
 
 		List<Double> out = new ArrayList<>();
-		out.add(b5.getOutput());
+		out.add(b5.getLastOutput());
 
 		List<Line> lines = Arrays.asList(l1, l2, l3, l4, l5, l6, l7, l8, l9,
 				l10);
 		TestUtil.timeIt(() -> {
-			config.iterate((i, k) -> {
-				lines.forEach(l -> l.push(i, k));
-				out.add(b5.getOutput());
+			config.iterate(() -> {
+				lines.forEach(l -> l.push());
+				out.add(b5.getLastOutput());
 			});
 		});
 		TestUtil.printRange(out, 10);
