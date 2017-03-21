@@ -5,19 +5,12 @@ import java.util.List;
 
 import hust.hx.util.LangUtil;
 
-public class Scope implements ControlBlock {
+public class Scope extends BaseBlock implements ControlBlock {
 	private List<Double> data = new ArrayList<>();
-
-	private double lastOutput, newOutput;
-
-	@Override
-	public double getLastOutput() {
-		return lastOutput;
-	}
 
 	@Override
 	public void next(double input) {
-		newOutput = input;
+		data.add(input);
 	}
 
 	public List<Double> getData() {
@@ -27,11 +20,5 @@ public class Scope implements ControlBlock {
 	@Override
 	public String toString() {
 		return LangUtil.concatWithComma(LangUtil.toPrimitiveDoubleArray(data));
-	}
-
-	@Override
-	public void moveOn() {
-		lastOutput = newOutput;
-		data.add(newOutput);
 	}
 }

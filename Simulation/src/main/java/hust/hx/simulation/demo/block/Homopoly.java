@@ -53,4 +53,9 @@ public class Homopoly implements LinearBlock {
 		adder.moveOn();
 	}
 
+	@Override
+	public double getCurrentOutput() {
+		return adder.getCurrentOutput();
+	}
+
 }

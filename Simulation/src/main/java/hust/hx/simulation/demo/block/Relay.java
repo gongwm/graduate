@@ -1,17 +1,10 @@
 package hust.hx.simulation.demo.block;
 
-public class Relay implements NonlinearBlock {
+public class Relay extends BaseBlock implements NonlinearBlock {
 	private double y0;
-
-	private double lastOutput, newOutput;
 
 	Relay(double y0) {
 		this.y0 = y0;
-	}
-
-	@Override
-	public double getLastOutput() {
-		return lastOutput;
 	}
 
 	@Override
@@ -24,10 +17,4 @@ public class Relay implements NonlinearBlock {
 			newOutput = 0.0;
 		}
 	}
-
-	@Override
-	public void moveOn() {
-		lastOutput = newOutput;
-	}
-
 }

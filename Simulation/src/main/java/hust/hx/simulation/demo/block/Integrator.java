@@ -1,11 +1,8 @@
 package hust.hx.simulation.demo.block;
 
-public class Integrator implements ControlBlock {
+public class Integrator extends BaseBlock implements ControlBlock {
 	Config config = Config.DEFAULT_CONFIG;
 	private double k = 2;
-
-	private double lastOutput = 0.0;
-	private double newOutput;
 
 	private double c;
 

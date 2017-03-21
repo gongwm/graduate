@@ -42,12 +42,19 @@ public class ClosedTest {
 		joint.addLine(line4, Adder.SUB);
 
 		List<Double> out = new ArrayList<>();
+		out.add(integrator.getLastOutput());
 		TestUtil.timeIt(() -> {
 			config.iterate(() -> {
 				line1.push();
 				line2.push();
 				line3.push();
 				line4.push();
+
+				step.moveOn();
+				joint.moveOn();
+				inertia.moveOn();
+				integrator.moveOn();
+
 				out.add(integrator.getLastOutput());
 			});
 		});

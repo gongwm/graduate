@@ -20,7 +20,11 @@ public class Line {
 			((Source) start).next();
 		}
 		if (end instanceof ControlBlock) {
-			((ControlBlock) end).next(start.getLastOutput());
+			if (end instanceof Scope) {
+				((Scope) end).next(start.getCurrentOutput());
+			} else {
+				((ControlBlock) end).next(start.getLastOutput());
+			}
 		}
 		if (end instanceof Joint) {
 			((Joint) end).next();

@@ -1,18 +1,10 @@
 package hust.hx.simulation.demo.block;
 
-public class Insensitor implements NonlinearBlock {
+public class Insensitor extends BaseBlock implements NonlinearBlock {
 	private double c;
-
-	private double lastOutput;
-	private double newOutput;
 
 	Insensitor(double c) {
 		this.c = c;
-	}
-
-	@Override
-	public double getLastOutput() {
-		return lastOutput;
 	}
 
 	@Override
@@ -25,10 +17,4 @@ public class Insensitor implements NonlinearBlock {
 			newOutput = 0;
 		}
 	}
-
-	@Override
-	public void moveOn() {
-		lastOutput = newOutput;
-	}
-
 }

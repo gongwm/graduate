@@ -3,14 +3,12 @@ package hust.hx.simulation.demo.block;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Adder implements Joint {
+public class Adder extends BaseBlock implements Joint {
 	static final char ADD = '+';
 	static final char SUB = '-';
-	
+
 	private List<Line> lines = new ArrayList<>();
 	private List<Character> formats = new ArrayList<>();
-
-	private double lastOutput, newOutput;
 
 	public Adder() {
 		super();
@@ -20,11 +18,6 @@ public class Adder implements Joint {
 		checkValidation(line, operator);
 		lines.add(line);
 		formats.add(operator);
-	}
-
-	@Override
-	public double getLastOutput() {
-		return lastOutput;
 	}
 
 	private void checkValidation(Line line, char operator) {
@@ -45,10 +38,5 @@ public class Adder implements Joint {
 				newOutput -= output;
 			}
 		}
-	}
-
-	@Override
-	public void moveOn() {
-		lastOutput = newOutput;
 	}
 }

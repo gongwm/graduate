@@ -2,14 +2,11 @@ package hust.hx.simulation.demo.block;
 
 import static java.lang.Math.pow;
 
-public class Inertia implements LinearBlock {
+public class Inertia extends BaseBlock implements LinearBlock {
 	private Config config = Config.DEFAULT_CONFIG;
 
 	double k = 1.0;
 	double t = 0.1;
-
-	private double lastOutput = 0.0;
-	private double newOutput;
 
 	private double c1;
 	private double c2;
@@ -37,14 +34,6 @@ public class Inertia implements LinearBlock {
 	void setConfig(Config config) {
 		this.config = config;
 		initRatio();
-	}
-
-	public double getLastOutput() {
-		return lastOutput;
-	}
-
-	public void moveOn() {
-		lastOutput = newOutput;
 	}
 
 	@Override
