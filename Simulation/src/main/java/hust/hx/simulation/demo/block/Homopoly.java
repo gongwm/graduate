@@ -1,19 +1,20 @@
 package hust.hx.simulation.demo.block;
 
+import java.math.BigDecimal;
+
+import hust.hx.util.TestUtil;
+
 public class Homopoly implements LinearBlock {
 	private ControlBlock amp1, amp2, inertia;
 	private Adder adder;
 	private Line l1, l2, l3, l4;
 
-	public Homopoly() {
-	}
+	public Homopoly(double a, double b, double c) {
+		if (c == 0) {
+			throw new IllegalArgumentException("Homopoly: c != 0.0");
+		}
 
-	public Homopoly config(double... data) {
-		assert data.length == 3;
-		double a = data[0], b = data[1], c = data[2];
-		assert c != 0.0;
-
-		double x = b / c, y = 1 - x;
+		double x = calculateX(a, b, c), y = a - x;
 
 		amp1 = new Amplifier(a);
 		amp2 = new Amplifier(x);
@@ -27,8 +28,13 @@ public class Homopoly implements LinearBlock {
 
 		adder.addLine(l3, Adder.ADD);
 		adder.addLine(l4, Adder.ADD);
+	}
 
-		return this;
+	private double calculateX(double a, double b, double c) {
+		BigDecimal aa = BigDecimal.valueOf(a);
+		BigDecimal bb = BigDecimal.valueOf(b);
+		BigDecimal cc = BigDecimal.valueOf(c);
+		return aa.pow(2).multiply(bb).divide(cc).doubleValue();
 	}
 
 	@Override
@@ -38,6 +44,8 @@ public class Homopoly implements LinearBlock {
 		l2.push();
 		l3.push();
 		l4.push();
+
+		TestUtil.print(inertia.getCurrentOutput());
 	}
 
 	@Override
@@ -58,4 +66,12 @@ public class Homopoly implements LinearBlock {
 		return adder.getCurrentOutput();
 	}
 
+	@Override
+	public void setInitValue(double initValue) {
+		amp1.setInitValue(initValue);
+		amp2.setInitValue(amp1.getLastOutput());
+		inertia.setInitValue(amp1.getLastOutput());
+		adder.setInitValue(initValue);
+		moveOn();
+	}
 }

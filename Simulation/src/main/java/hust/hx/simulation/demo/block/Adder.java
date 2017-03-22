@@ -24,19 +24,31 @@ public class Adder extends BaseBlock implements Joint {
 		if (line.end != this || (operator != ADD && operator != SUB)) {
 			throw new IllegalArgumentException("wrong line or format");
 		}
+		if (lines.contains(line)) {
+			throw new IllegalArgumentException("line already exists");
+		}
 	}
 
 	@Override
 	public void next() {
+		double result = 0.0;
 		for (int i = 0; i < lines.size(); ++i) {
-			double output = lines.get(i).start.getLastOutput();
+			double output = lines.get(i).start.getCurrentOutput();
 			switch (formats.get(i)) {
 			case ADD:
-				newOutput += output;
+				result += output;
 				break;
 			case SUB:
-				newOutput -= output;
+				result -= output;
+				break;
 			}
 		}
+		newOutput = result;
+	}
+
+	@Override
+	public void setInitValue(double initValue) {
+		next();
+		moveOn();
 	}
 }

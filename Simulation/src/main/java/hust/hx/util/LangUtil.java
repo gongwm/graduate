@@ -671,8 +671,11 @@ public class LangUtil {
 
 	public static <T, K> Stream<Pair<T, K>> zipList(List<T> list1,
 			List<K> list2) {
-		return zip(list1.stream(), list2.stream(), (a, b) -> {
-			return new Pair<T, K>(a, b);
-		});
+		return zip(list1.stream(), list2.stream(), Pair::of);
+	}
+
+	public static Stream<Pair<Double, Double>> zipDoubleArray(double[] d1,
+			double[] d2) {
+		return zip(toList(d1).stream(), toList(d2).stream(), Pair::of);
 	}
 }

@@ -8,6 +8,7 @@ public class Line {
 		super();
 		this.start = start;
 		this.end = end;
+		end.setInitValue(start.getLastOutput());
 		if (end instanceof Scope) {
 			Scope s = (Scope) end;
 			s.next(start.getLastOutput());

@@ -6,6 +6,12 @@ public class StepSource extends BaseBlock implements Source {
 	}
 
 	@Override
+	public double getCurrentOutput() {
+		return getLastOutput();
+	}
+
+	@Override
 	public void next() {
+		newOutput = getLastOutput();
 	}
 }

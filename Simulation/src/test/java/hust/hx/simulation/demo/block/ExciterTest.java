@@ -18,7 +18,7 @@ import hust.hx.util.TestUtil;
 
 public class ExciterTest {
 	public static void main(String[] args) {
-		Config config = new Config();
+		Config config = Config.DEFAULT_CONFIG;
 
 		Source stepSource = new StepSource();
 		Adder j1 = new Adder();
@@ -52,10 +52,16 @@ public class ExciterTest {
 
 		List<Line> lines = Arrays.asList(l1, l2, l3, l4, l5, l6, l7, l8, l9,
 				l10);
+
+		List<Block> blocks = Arrays.asList(stepSource, j1, b1, b2, j2, b3, b4,
+				b5, b6);
 		TestUtil.timeIt(() -> {
 			config.iterate(() -> {
 				lines.forEach(l -> l.push());
-				out.add(b5.getLastOutput());
+
+				blocks.forEach(b -> b.moveOn());
+
+				out.add(b5.getCurrentOutput());
 			});
 		});
 		TestUtil.printRange(out, 10);

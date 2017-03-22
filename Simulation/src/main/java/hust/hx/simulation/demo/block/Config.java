@@ -26,10 +26,11 @@ public class Config {
 	}
 
 	void iterate(Once once) {
+		t += T; // start from 1*T
 		for (int i = 1; i < n; ++i) {
-			t += T;
-			once.step();
 			time[i] = t;
+			once.step();
+			t += T;
 		}
 	}
 
