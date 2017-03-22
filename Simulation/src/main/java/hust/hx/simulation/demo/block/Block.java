@@ -6,9 +6,9 @@ public interface Block {
 
 	void setInitValue(double input);
 
-	double getLastOutput();
+	double getCurrent();
 
-	double getCurrentOutput();
+	double getNext();
 
 	void moveOn();
 }

@@ -10,7 +10,7 @@ public class Scope extends BaseBlock implements ControlBlock {
 
 	@Override
 	public void next(double input) {
-		newOutput = input;
+		next = input;
 		data.add(input);
 	}
 

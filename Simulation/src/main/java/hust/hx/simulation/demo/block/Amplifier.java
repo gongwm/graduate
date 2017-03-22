@@ -9,7 +9,7 @@ public class Amplifier extends BaseBlock implements LinearBlock {
 
 	@Override
 	public void next(double input) {
-		newOutput = k * input;
+		next = k * input;
 	}
 
 	@Override

@@ -42,7 +42,7 @@ public class HomopolyTest {
 
 		Scope s = (Scope) sc;
 		assertEquals(1001, s.getData().size());
-		assertNotEquals(0.0, hp.getLastOutput());
+		assertNotEquals(0.0, hp.getCurrent());
 
 		double[] time = c.getTime();
 		double[] data = LangUtil.toPrimitiveDoubleArray(s.getData());

@@ -15,7 +15,7 @@ public class SimpleTest {
 		Config config = Config.DEFAULT_CONFIG;
 
 		Block b1 = new StepSource();
-		Block b2 = new Inertia().config(1, 0.1);
+		Block b2 = new Inertia(1, 0.1);
 		Block b3 = new Scope();
 
 		Line l1 = new Line(b1, b2);
@@ -24,7 +24,7 @@ public class SimpleTest {
 		config.iterate(() -> {
 			l1.push();
 			l2.push();
-			
+
 			b1.moveOn();
 			b2.moveOn();
 			b3.moveOn();

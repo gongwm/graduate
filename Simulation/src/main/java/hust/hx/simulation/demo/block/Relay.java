@@ -10,11 +10,11 @@ public class Relay extends BaseBlock implements NonlinearBlock {
 	@Override
 	public void next(double input) {
 		if (input > 0.0) {
-			newOutput = y0;
+			next = y0;
 		} else if (input < 0.0) {
-			newOutput = -y0;
+			next = -y0;
 		} else {
-			newOutput = 0.0;
+			next = 0.0;
 		}
 	}
 }

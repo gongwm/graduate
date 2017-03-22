@@ -1,17 +1,12 @@
 package hust.hx.simulation.demo.block;
 
 public class StepSource extends BaseBlock implements Source {
-	public double getLastOutput() {
+	public double getCurrent() {
 		return 1.0;
 	}
 
 	@Override
-	public double getCurrentOutput() {
-		return getLastOutput();
-	}
-
-	@Override
 	public void next() {
-		newOutput = getLastOutput();
+		next = getCurrent();
 	}
 }

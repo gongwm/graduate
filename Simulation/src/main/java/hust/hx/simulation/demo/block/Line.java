@@ -8,10 +8,10 @@ public class Line {
 		super();
 		this.start = start;
 		this.end = end;
-		end.setInitValue(start.getLastOutput());
+		end.setInitValue(start.getCurrent());
 		if (end instanceof Scope) {
 			Scope s = (Scope) end;
-			s.next(start.getLastOutput());
+			s.next(start.getCurrent());
 			s.moveOn();
 		}
 	}
@@ -22,9 +22,9 @@ public class Line {
 		}
 		if (end instanceof ControlBlock) {
 			if (end instanceof Scope) {
-				((Scope) end).next(start.getCurrentOutput());
+				((Scope) end).next(start.getNext());
 			} else {
-				((ControlBlock) end).next(start.getLastOutput());
+				((ControlBlock) end).next(start.getNext());
 			}
 		}
 		if (end instanceof Joint) {

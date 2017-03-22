@@ -10,11 +10,11 @@ public class Insensitor extends BaseBlock implements NonlinearBlock {
 	@Override
 	public void next(double input) {
 		if (input > c) {
-			newOutput = input - c;
+			next = input - c;
 		} else if (input < -c) {
-			newOutput = input + c;
+			next = input + c;
 		} else {
-			newOutput = 0;
+			next = 0;
 		}
 	}
 }

@@ -22,13 +22,13 @@ public class ExciterTest {
 
 		Source stepSource = new StepSource();
 		Adder j1 = new Adder();
-		Block b1 = new Inertia().config(40, 0.1);
+		Block b1 = new Inertia(40, 0.1);
 		Block b2 = new Limiter(30);
 		Adder j2 = new Adder();
-		Block b3 = new Inertia().config(-20, -10);
+		Block b3 = new Inertia(-20, -10);
 		Block b4 = new Amplifier(0.01);
-		Block b5 = new Inertia().config(1, 1);
-		Block b6 = new Inertia().config(0.05, 0.05);
+		Block b5 = new Inertia(1, 1);
+		Block b6 = new Inertia(0.05, 0.05);
 
 		Line l1 = new Line(stepSource, j1);
 		Line l2 = new Line(j1, b1);
@@ -48,20 +48,20 @@ public class ExciterTest {
 		j2.addLine(l7, Adder.SUB);
 
 		List<Double> out = new ArrayList<>();
-		out.add(b5.getLastOutput());
+		out.add(b5.getCurrent());
 
 		List<Line> lines = Arrays.asList(l1, l2, l3, l4, l5, l6, l7, l8, l9,
 				l10);
-
 		List<Block> blocks = Arrays.asList(stepSource, j1, b1, b2, j2, b3, b4,
 				b5, b6);
+
 		TestUtil.timeIt(() -> {
 			config.iterate(() -> {
 				lines.forEach(l -> l.push());
 
 				blocks.forEach(b -> b.moveOn());
 
-				out.add(b5.getCurrentOutput());
+				out.add(b5.getNext());
 			});
 		});
 		TestUtil.printRange(out, 10);

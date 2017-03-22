@@ -6,22 +6,17 @@ public class Integrator extends BaseBlock implements ControlBlock {
 
 	private double c;
 
-	Integrator() {
-		c = k * this.config.T;
+	Integrator(double k) {
+		this.k = k;
+		initRatio();
 	}
 
-	@Override
-	public double getLastOutput() {
-		return lastOutput;
+	private void initRatio() {
+		c = k * config.T;
 	}
 
 	@Override
 	public void next(double input) {
-		newOutput = lastOutput + c * input;
-	}
-
-	@Override
-	public void moveOn() {
-		lastOutput = newOutput;
+		next = current + c * input;
 	}
 }

@@ -17,7 +17,7 @@ import hust.hx.util.TestUtil;
 /**
  * <pre>
  * step->joint->inertia->integrator--->
- *         ^                        |
+ *         +                        |
  *         |________________________|
  * </pre>
  * 
@@ -30,8 +30,8 @@ public class ClosedTest {
 
 		Source step = new StepSource();
 		Adder joint = new Adder();
-		ControlBlock inertia = new Inertia();
-		ControlBlock integrator = new Integrator();
+		ControlBlock inertia = new Inertia(1, 0.1);
+		ControlBlock integrator = new Integrator(2);
 
 		Line line1 = new Line(step, joint);
 		Line line2 = new Line(joint, inertia);
@@ -42,7 +42,12 @@ public class ClosedTest {
 		joint.addLine(line4, Adder.SUB);
 
 		List<Double> out = new ArrayList<>();
-		out.add(integrator.getLastOutput());
+		out.add(integrator.getCurrent());
+
+		joint.setInitValue(0.0);
+		TestUtil.print(joint.getCurrent());
+		TestUtil.print(inertia.getCurrent());
+
 		TestUtil.timeIt(() -> {
 			config.iterate(() -> {
 				line1.push();
@@ -55,12 +60,15 @@ public class ClosedTest {
 				inertia.moveOn();
 				integrator.moveOn();
 
-				out.add(integrator.getLastOutput());
+				TestUtil.print(String.format("%f  %f  %f", joint.getCurrent(),
+						inertia.getCurrent(), integrator.getCurrent()));
+
+				out.add(integrator.getCurrent());
 			});
 		});
-		TestUtil.print(out.size());
-		TestUtil.print(config.time.length);
-		TestUtil.printRange(out, 60);
+		// TestUtil.print(out.size());
+		// TestUtil.print(config.time.length);
+		// TestUtil.printRange(out, 60);
 
 		PrintUtil.print(pw -> {
 			for (int i = 0; i < out.size(); ++i) {

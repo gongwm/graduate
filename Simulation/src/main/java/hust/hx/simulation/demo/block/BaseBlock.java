@@ -2,28 +2,28 @@ package hust.hx.simulation.demo.block;
 
 abstract class BaseBlock implements Block {
 
-	protected double lastOutput = 0.0, newOutput;
+	protected double current = 0.0, next;
 
 	public BaseBlock() {
 	}
 
 	@Override
-	public double getLastOutput() {
-		return lastOutput;
+	public double getCurrent() {
+		return current;
 	}
 
 	@Override
-	public double getCurrentOutput() {
-		return newOutput;
+	public double getNext() {
+		return next;
 	}
 
 	@Override
 	public void moveOn() {
-		lastOutput = newOutput;
+		current = next;
 	}
 
 	@Override
 	public void setInitValue(double input) {
-		lastOutput = 0.0;
+		current = 0.0;
 	}
 }

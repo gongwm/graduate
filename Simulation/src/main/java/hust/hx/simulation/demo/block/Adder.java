@@ -33,7 +33,7 @@ public class Adder extends BaseBlock implements Joint {
 	public void next() {
 		double result = 0.0;
 		for (int i = 0; i < lines.size(); ++i) {
-			double output = lines.get(i).start.getCurrentOutput();
+			double output = lines.get(i).start.getCurrent();
 			switch (formats.get(i)) {
 			case ADD:
 				result += output;
@@ -43,7 +43,7 @@ public class Adder extends BaseBlock implements Joint {
 				break;
 			}
 		}
-		newOutput = result;
+		next = result;
 	}
 
 	@Override

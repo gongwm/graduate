@@ -16,11 +16,11 @@ public class Limiter extends BaseBlock implements NonlinearBlock {
 	@Override
 	public void next(double input) {
 		if (input > upperBound) {
-			newOutput = upperBound;
+			next = upperBound;
 		} else if (input < lowerBound) {
-			newOutput = lowerBound;
+			next = lowerBound;
 		} else {
-			newOutput = input;
+			next = input;
 		}
 	}
 }

@@ -2,8 +2,6 @@ package hust.hx.simulation.demo.block;
 
 import java.math.BigDecimal;
 
-import hust.hx.util.TestUtil;
-
 public class Homopoly implements LinearBlock {
 	private ControlBlock amp1, amp2, inertia;
 	private Adder adder;
@@ -18,7 +16,7 @@ public class Homopoly implements LinearBlock {
 
 		amp1 = new Amplifier(a);
 		amp2 = new Amplifier(x);
-		inertia = new Inertia().config(y, c);
+		inertia = new Inertia(y, c);
 		adder = new Adder();
 
 		l1 = new Line(amp1, amp2);
@@ -44,13 +42,11 @@ public class Homopoly implements LinearBlock {
 		l2.push();
 		l3.push();
 		l4.push();
-
-		TestUtil.print(inertia.getCurrentOutput());
 	}
 
 	@Override
-	public double getLastOutput() {
-		return adder.getLastOutput();
+	public double getCurrent() {
+		return adder.getCurrent();
 	}
 
 	@Override
@@ -62,15 +58,15 @@ public class Homopoly implements LinearBlock {
 	}
 
 	@Override
-	public double getCurrentOutput() {
-		return adder.getCurrentOutput();
+	public double getNext() {
+		return adder.getNext();
 	}
 
 	@Override
 	public void setInitValue(double initValue) {
 		amp1.setInitValue(initValue);
-		amp2.setInitValue(amp1.getLastOutput());
-		inertia.setInitValue(amp1.getLastOutput());
+		amp2.setInitValue(amp1.getCurrent());
+		inertia.setInitValue(amp1.getCurrent());
 		adder.setInitValue(initValue);
 		moveOn();
 	}
