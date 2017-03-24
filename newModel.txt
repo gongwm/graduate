@@ -36,3 +36,145 @@ cb:{
 }
 
 }
+
+
+
+
+
+[
+		config:[
+			type:'fixed',
+			T:0.001,
+			t:0.0,
+			tt:10
+		],
+		components:[
+			s1:[type:'step'],
+			j1:[type:'joint',lines:[l1:'+', l10:'-']],
+			b1:[type:'inertia',k:40,t:0.1],
+			b2:[type:'limiter',upper:30,lower:-30],
+			j2:[type:'joint',lines:[l4:'+',l7:'-']],
+			b3:[type:'inertia',k:-20,t:-10],
+			b4:[type:'amplifier',k:0.01],
+			b5:[type:'inertia',k:1,t:1],
+			b6:[type:'inertia',k:0.05,t:0.05],
+			b7:[type:'scope']
+		],
+		lines:[
+			l1:['s1', 'j1'],
+			l2:['j1', 'b1'],
+			l3:['b1', 'b2'],
+			l4:['b2', 'j2'],
+			l5:['j2', 'b3'],
+			l6:['b3', 'b4'],
+			l7:['b4', 'j2'],
+			l8:['b3', 'b5'],
+			l9:['b5', 'b6'],
+			l10:['b6', 'j1'],
+			l11:['b5', 'b7']]
+	]
+	
+	
+	
+	
+	
+[
+	components:[
+		b1:[k:40, t:0.1, type:inertia],
+		b2:[lower:-30, type:limiter, upper:30], 
+		b3:[k:-20, t:-10, type:inertia], 
+		b4:[k:0.01, type:amplifier], 
+		b5:[k:1, t:1, type:inertia], 
+		b6:[k:0.05, t:0.05, type:inertia], 
+		b7:[type:scope], 
+		j1:[lines:[l1:'+', l10:'-'], type:joint], 
+		j2:[lines:[l4:'+', l7:'-'], type:joint], 
+		s1:[type:step]], 
+		
+	    config:[T:0.01, t:0.0, tt:10, type:fixed], 
+		
+		lines:[
+			l1:[s1, j1], 
+			l10:[b6, j1], 
+			l11:[b5, b7], 
+			l2:[j1, b1], 
+			l3:[b1, b2], 
+			l4:[b2, j2], 
+			l5:[j2, b3], 
+			l6:[b3, b4], 
+			l7:[b4, j2], 
+			l8:[b3, b5], 
+			l9:[b5, b6]]
+		]
+
+def adjustLines(){
+
+
+}
+
+
+
+
+
+def origin = [l1:['s1', 'j1'],
+             l2:['j1', 'b1'],
+             l3:['b1', 'b2'],
+             l4:['b2', 'j2'],
+             l5:['j2', 'b3'],
+             l6:['b3', 'b4'],
+             l7:['b4', 'j2'],
+             l8:['b3', 'b5'],
+             l9:['b5', 'b6'],
+             l10:['b6', 'j1'],
+             l11:['b5', 'b7']]
+
+
+
+def resolve(origin){
+def ol=[:]
+def lines=origin.clone()
+
+def init=lines.find{true}
+if(!init) return [:]
+lines.remove(init.key)
+ol<<init
+
+def f=lines.find{it.value[0]==init.value[1]}
+while(f){
+lines.remove(f.key)
+ol<<f
+f=lines.find{it.value[0]==f.value[1]}
+}
+
+return [ol,lines]
+}
+
+
+
+def resolveAll(origin){
+def result=[]
+def one=resolve(origin)
+result<<one[0]
+
+while(one[1]){
+one=resolve(one[1])
+result<<one[0]
+}
+return result
+}
+
+
+
+def r=resolveAll(origin) // test
+r.each{
+println(it)
+println ''
+}
+
+println 'done'
+
+
+
+
+
+

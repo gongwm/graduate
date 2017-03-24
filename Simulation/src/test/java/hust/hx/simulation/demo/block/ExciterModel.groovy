@@ -6,7 +6,7 @@ public class ExciterModel{
 	static def exciter=[
 		config:[
 			type:'fixed',
-			T:0.01,
+			T:0.001,
 			t:0.0,
 			tt:10
 		],

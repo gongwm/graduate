@@ -15,8 +15,7 @@ public class Inertia extends BaseBlock implements LinearBlock {
 	double k = 1.0;
 	double t = 0.1;
 
-	private double c1;
-	private double c2;
+	private double c1, c2;
 
 	Inertia(double k, double t) {
 		this.k = k;

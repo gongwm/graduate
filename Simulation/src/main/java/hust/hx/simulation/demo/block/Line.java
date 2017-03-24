@@ -21,11 +21,8 @@ public class Line {
 			((Source) start).next();
 		}
 		if (end instanceof ControlBlock) {
-			if (end instanceof Scope) {
-				((Scope) end).next(start.getNext());
-			} else {
-				((ControlBlock) end).next(start.getNext());
-			}
+			ControlBlock cb = (ControlBlock) end;
+			cb.next(start.getNext());
 		}
 		if (end instanceof Joint) {
 			((Joint) end).next();

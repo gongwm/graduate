@@ -5,6 +5,8 @@ import hust.hx.util.TestUtil
 
 class SimulatorTest1 {
 	static def main(args){
+		println ExciterModel.exciter
+
 		Simulator sim=new Simulator()
 		sim.initSystem(ExciterModel.exciter)
 		TestUtil.timeIt{ sim.simulate() }

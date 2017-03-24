@@ -45,8 +45,6 @@ public class ClosedTest {
 		out.add(integrator.getCurrent());
 
 		joint.setInitValue(0.0);
-		TestUtil.print(joint.getCurrent());
-		TestUtil.print(inertia.getCurrent());
 
 		TestUtil.timeIt(() -> {
 			config.iterate(() -> {
@@ -60,15 +58,12 @@ public class ClosedTest {
 				inertia.moveOn();
 				integrator.moveOn();
 
-				TestUtil.print(String.format("%f  %f  %f", joint.getCurrent(),
-						inertia.getCurrent(), integrator.getCurrent()));
-
 				out.add(integrator.getCurrent());
 			});
 		});
-		// TestUtil.print(out.size());
-		// TestUtil.print(config.time.length);
-		// TestUtil.printRange(out, 60);
+		TestUtil.print(out.size());
+		TestUtil.print(config.time.length);
+		TestUtil.printRange(out, 60);
 
 		PrintUtil.print(pw -> {
 			for (int i = 0; i < out.size(); ++i) {

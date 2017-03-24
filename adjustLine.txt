@@ -1,0 +1,86 @@
+def origin = [l1:['s1', 'j1'],
+             l2:['j1', 'b1'],
+             l3:['b1', 'b2'],
+             l4:['b2', 'j2'],
+             l5:['j2', 'b3'],
+             l6:['b3', 'b4'],
+             l7:['b4', 'j2'],
+             l8:['b3', 'b5'],
+             l9:['b5', 'b6'],
+             l10:['b6', 'j1'],
+             l11:['b5', 'b7']]
+
+       
+    def resolve(origin){
+        def chains=origin.collect{r(origin,[:],it)}
+    }
+    
+    def resolveFrom(origin,f){
+        def lines=origin.clone() 
+        def ol=[:]
+        ol<<f
+        while(f=lines.find{it.value[0]==f.value[1]}){
+            lines.remove(f.key)
+            ol<<f
+        }
+        return ol
+    }
+    
+    def r(remain,existing,f){
+        def result=[]
+        def lines=remain.clone()
+        def ol=existing.clone()
+        
+        ol<<f
+        while(f=lines.findAll{it.value[0]==f.value[1]}){
+            def count=f.count{true}
+
+            if(count==1){
+                def added=f.find{true}
+                lines.remove(added.key)
+                ol<<added
+                f=added
+            }else{
+                break
+            }
+        }
+        return [ol,lines,f]
+    }
+    
+    
+    
+    
+    
+    
+    
+    def res    = r(origin,[:],origin.find{it.key=='l1'})
+    def exist  = res[0]
+    def remain = res[1]
+    def f      = res[2]
+    
+    println exist
+    println f
+    
+   // r(remain,)
+    
+    println ''
+    
+    f.each{
+        res=r(remain,exist,it)
+        println res[0]
+        println ''
+    }
+    
+    println ''
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

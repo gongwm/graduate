@@ -1,5 +1,7 @@
 package hust.hx.simulation.demo.block
 
+import groovy.json.JsonSlurper
+
 class Simulator {
 	Config config
 	Map<String,Block> components=[:]
@@ -11,6 +13,13 @@ class Simulator {
 
 		model.components.each{
 			components[it.key]=BlockFactory.create(it.value)
+		}
+
+		components.each{
+			def comp=it.value
+			if(comp instanceof Inertia){
+				comp.setConfig(config)
+			}
 		}
 
 		model.lines.each{
@@ -27,18 +36,18 @@ class Simulator {
 				}
 			}
 		}
+	}
 
-		components.each{
-			if(it instanceof Inertia){
-				it.setConfig(config)
-			}
-		}
+	def initJsonSystem(String jsonString){
+		def model=new JsonSlurper().parseText(jsonString)
+		adjustLine(model)
+		initSystem(model)
 	}
 
 	def simulate(){
-		config.iterate{i,k->
+		config.iterate{
 			lines.each{
-				it.value.push(i,k)
+				it.value.push()
 			}
 			components.each{
 				it.value.moveOn()
@@ -49,7 +58,45 @@ class Simulator {
 	private def checkValidation(){
 	}
 
-	private def adjustLine(){
+	private def adjustLine(model){
+		println model.lines
+		def lines=resolveAll(model.lines)
+		model.lines=lines
+	}
+
+	private def resolve(origin){
+		def ol=[:]
+		def lines=origin.clone()
+
+		def init=lines.find{ true }
+		if(!init) return [:]
+		lines.remove(init.key)
+		ol<<init
+
+		def f=lines.find{it.value[0]==init.value[1]}
+		while(f){
+			lines.remove(f.key)
+			ol<<f
+			f=lines.find{it.value[0]==f.value[1]}
+		}
+
+		return [ol, lines]
+	}
+
+	private def resolveAll(origin){
+		def result=[]
+		def one=resolve(origin)
+		result<<one[0]
+
+		while(one[1]){
+			one=resolve(one[1])
+			result<<one[0]
+		}
+
+		def ret=result.inject{x,y->	x<<y}
+
+		println ret
+		return ret
 	}
 
 	def findOutputs(){
@@ -70,7 +117,7 @@ class BlockFactory{
 			case 'joint':
 					b=new Adder();break;
 			case 'inertia':
-					b=new Inertia().config(info.k as double,info.t as double);break;
+					b=new Inertia(info.k as double,info.t as double);break;
 			case 'amplifier':
 					b=new Amplifier(info.k as double);break;
 			case 'limiter':
