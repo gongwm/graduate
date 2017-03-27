@@ -33,7 +33,7 @@ def origin = [l1:['s1', 'j1'],
         
         ol<<f
         while(f=lines.findAll{it.value[0]==f.value[1]}){
-            def count=f.count{true}
+            def count=f.size()
 
             if(count==1){
                 def added=f.find{true}
@@ -53,10 +53,10 @@ def origin = [l1:['s1', 'j1'],
     
     
     
-    def res    = r(origin,[:],origin.find{it.key=='l1'})
-    def exist  = res[0]
-    def remain = res[1]
-    def f      = res[2]
+    def res     =  r(origin,[:],origin.find{it.key=='l1'})
+    def exist   =  res[0]
+    def remain  =  res[1]
+    def f       =  res[2]
     
     println exist
     println f
