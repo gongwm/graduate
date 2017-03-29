@@ -25,7 +25,7 @@ def resolve(remaining,existing,tails){
             tails=[:]
             break
         }else if(count==1){
-            def added=found.find{true} // only one
+            def added=tails.find{true} // only one
             remain.remove(added.key)
             exist<<added
         }else/* if(count>1) */{ 
@@ -111,11 +111,3 @@ println ''
 
 
 
-
-    
-    
-    
-    
-    
-
-    
