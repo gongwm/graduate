@@ -47,7 +47,14 @@ def splitFound(found){
 	return chains
 }
 
-def resumeReso(chains, List resolved){
+
+def resumeResolve(chains){
+	def resolved=[]
+	resume(chains,resolved)
+	return resolved
+}
+
+def resume(chains, List resolved){
 	chains.each{
 		if(!it.tails){
 			resolved.add(it)
@@ -55,7 +62,7 @@ def resumeReso(chains, List resolved){
 			def found=resolve(it.remaining, it.existing, it.tails)
 			if(found.tails.size()>1){
 				found=splitFound(found)
-				resumeReso(found,resolved)
+				resume(found,resolved)
 			}else if(found.tails.size()==0){
 				resolved.add(found)
 			}
@@ -64,35 +71,60 @@ def resumeReso(chains, List resolved){
 	return resolved
 }
 
-def resumeResolve(chains){
-	def resolved=[]
-	resumeReso(chains,resolved)
-	return resolved
-}
-
 def resolveAll(origin,start){
-	def initFound=resolve(origin,[:],origin.find{it.key==start})
-	def initChains=splitFound(initFound)
-	def chains=resumeResolve(initChains)
-
-	def mainChain=chains.max{it.existing.size()}
-
-	return mainChain
+	return resolveChain(origin){it.key==start}
 }
 
 def resolveRemaining(remaining){
 	def result=[]
 
-	def initFound=resolve(remaining,[:],remaining.find{true})
+	def remain=remaining.clone()
+
+	while(remain){
+		def mainChain=resolveChain(remain){true}
+		result<<mainChain.existing
+		remain=mainChain.remaining
+	}
+	result
+}
+
+def resolveChain(origin,Closure start){
+	def initFound=resolve(origin,[:],origin.find(start))
+
 	def initChains=splitFound(initFound)
-	println initChains
 	def chains=resumeResolve(initChains)
-	result<<chains
+	def mainChain=chains.max{it.existing.size()}
+
+	return mainChain
+}
+
+def resolveIt(origin,start){
+	def chains=[]
+
+	def remain=origin.clone()
+	def clue=start
+
+	while(remain){
+		def mainChain=resolveChain(remain,clue)
+		chains<<mainChain.existing
+		remain=mainChain.remaining
+		clue={true}
+	}
+	def res=[:]
+	chains.each{
+		it.each{res<<it}
+	}
+	return res
 }
 
 def mainChain=resolveAll(origin,'l1')
 println mainChain
 println 'done'
 println resolveRemaining(mainChain.remaining)
+
+println '_'*100
+def c=resolveIt(origin){it.key=='l1'}
+println c
+
 
 
