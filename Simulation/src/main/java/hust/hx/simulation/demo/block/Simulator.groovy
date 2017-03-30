@@ -6,10 +6,13 @@ class Simulator {
 	Config config
 	Map<String,Block> components=[:]
 	Map<String,Line> lines=[:]
+	
+	def initJsonSystem(String jsonString){
+		def model=new JsonSlurper().parseText(jsonString)
+		initSystem(model)
+	}
 
 	def initSystem(Map model){
-		model.lines=adjustLine(model.lines)
-
 		config=new Config()
 		config.config(model.config.T,model.config.t,model.config.tt)
 
@@ -23,6 +26,9 @@ class Simulator {
 				comp.setConfig(config)
 			}
 		}
+
+		adjustLine(model)
+		println model.lines
 
 		model.lines.each{
 			def start=components[it.value[0]]
@@ -40,10 +46,11 @@ class Simulator {
 		}
 	}
 
-	def initJsonSystem(String jsonString){
-		def model=new JsonSlurper().parseText(jsonString)
-		adjustLine(model)
-		initSystem(model)
+	private def adjustLine(Map model){
+		def srcId=components.findResult{if(it.value instanceof Source) return it.key}
+		def line=model.lines.find{it.value[0]==srcId}
+		def stage=new Stage(model.lines.clone(),[:],[:] << line)
+		model.lines=Stage.resolve(stage)
 	}
 
 	def simulate(){
@@ -58,13 +65,6 @@ class Simulator {
 	}
 
 	private def checkValidation(){
-	}
-
-	private def adjustLine(Map model){//!!
-		def srcId=components.findResult{if(it.value instanceof Source) return it.key}
-		def srcLineId=lines.findResult{if(it.value[0]==srcId) return it.key}
-		def stage=new Stage(lines,[:],[:]<<lines.find{it.key==srcLineId})
-		model.lines=Stage.resolve(stage)
 	}
 
 	private def resolve(origin){
