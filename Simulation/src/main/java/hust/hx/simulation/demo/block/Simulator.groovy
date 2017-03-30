@@ -8,6 +8,8 @@ class Simulator {
 	Map<String,Line> lines=[:]
 
 	def initSystem(Map model){
+		model.lines=adjustLine(model.lines)
+
 		config=new Config()
 		config.config(model.config.T,model.config.t,model.config.tt)
 
@@ -58,10 +60,11 @@ class Simulator {
 	private def checkValidation(){
 	}
 
-	private def adjustLine(model){
-		println model.lines
-		def lines=resolveAll(model.lines)
-		model.lines=lines
+	private def adjustLine(Map model){//!!
+		def srcId=components.findResult{if(it.value instanceof Source) return it.key}
+		def srcLineId=lines.findResult{if(it.value[0]==srcId) return it.key}
+		def stage=new Stage(lines,[:],[:]<<lines.find{it.key==srcLineId})
+		model.lines=Stage.resolve(stage)
 	}
 
 	private def resolve(origin){

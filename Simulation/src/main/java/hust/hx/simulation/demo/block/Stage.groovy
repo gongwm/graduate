@@ -1,3 +1,5 @@
+package hust.hx.simulation.demo.block
+
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
@@ -70,21 +72,3 @@ class Stage{
 		return initStage.resolve()
 	}
 }
-
-def origin=[
-	l1:['s1', 'j1'],
-	l10:['b6', 'j1'],
-	l11:['b5', 'b7'],
-	l2:['j1', 'b1'],
-	l3:['b1', 'b2'],
-	l4:['b2', 'j2'],
-	l5:['j2', 'b3'],
-	l6:['b3', 'b4'],
-	l7:['b4', 'j2'],
-	l8:['b3', 'b5'],
-	l9:['b5', 'b6']]
-
-def initStage=new Stage(origin,[:],origin.findAll{it.key=='l1'})
-
-println initStage.resolve()
-
