@@ -9,9 +9,9 @@ function Block(){
 Block._={};
 
 var proto=Block.prototype,
-	allTypes=['Inertia','Joint','Step','Scope'],
+	allTypes=['Inertia','Joint','Step','Scope','Homopoly'],
 	options={PREDEF:'_predef',CREATE:'create'},
-	types={INERTIA:'Inertia',JOINT:'Joint',STEP:'Step',SCOPE:'Scope'},
+	types={INERTIA:'Inertia',JOINT:'Joint',STEP:'Step',SCOPE:'Scope',HOMOPOLY:'Homopoly'},
 	_=Block._,
 	configTypes={
 		TEXT_TYPE:'text',
@@ -94,7 +94,7 @@ _.operationNotSupported=throwOperationNotSupportedError;
 Block._predefs=function(svg){
 	allTypes.forEach(function(type){
 		performOption(options.PREDEF,type,svg);
-	})
+	});
 };
 
 proto._redrawLines=function(){

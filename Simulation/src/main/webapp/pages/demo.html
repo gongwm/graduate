@@ -65,14 +65,25 @@
 		});
 		scope.paper.text(20, 180, 'scope');
 
+		var homopoly = Block.homopoly.use();
+		homopoly.attr({
+			x : 80,
+			y : 210
+		});
+		homopoly.data({
+			type : types.HOMOPOLY
+		});
+		homopoly.paper.text(20, 230, 'homo');
+
 		svg.add(step);
 		svg.add(inertia);
 		svg.add(joint);
 		svg.add(scope);
+		svg.add(homopoly);
 
 		var temp = null, type = null, m = null, m0 = null;
 
-		[ step, inertia, joint, scope ].forEach(function(t) {
+		[ step, inertia, joint, scope, homopoly ].forEach(function(t) {
 			t.drag(function onmove(dx, dy, x, y, e) {
 				m.translate(m0.e + dx - m.e, m0.f + dy - m.f);
 				temp.transform(m);

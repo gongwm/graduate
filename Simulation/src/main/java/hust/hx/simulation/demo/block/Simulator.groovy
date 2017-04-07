@@ -6,7 +6,7 @@ class Simulator {
 	Config config
 	Map<String,Block> components=[:]
 	Map<String,Line> lines=[:]
-	
+
 	def initJsonSystem(String jsonString){
 		def model=new JsonSlurper().parseText(jsonString)
 		initSystem(model)
@@ -127,6 +127,8 @@ class BlockFactory{
 					b=new Limiter(info.upper as double,info.lower as double);break;
 			case 'scope':
 					b=new Scope();break;
+			case 'homopoly':
+					b=new Homopoly(info.a as double,info.b as double,info.c as double);break;
 			default: throw new IllegalArgumentException('no such model');break;
 		}
 		return b;
