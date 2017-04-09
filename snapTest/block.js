@@ -9,9 +9,9 @@ function Block(){
 Block._={};
 
 var proto=Block.prototype,
-	allTypes=['Inertia','Joint','Step','Scope','Homopoly'],
+	allTypes=['Inertia','Joint','Step','Scope','Homopoly','Amplifier','Integrator'],
 	options={PREDEF:'_predef',CREATE:'create'},
-	types={INERTIA:'Inertia',JOINT:'Joint',STEP:'Step',SCOPE:'Scope',HOMOPOLY:'Homopoly'},
+	types={INERTIA:'Inertia',JOINT:'Joint',STEP:'Step',SCOPE:'Scope',HOMOPOLY:'Homopoly',AMPLIFIER:'Amplifier',INTEGRATOR:'Integrator'},
 	_=Block._,
 	configTypes={
 		TEXT_TYPE:'text',

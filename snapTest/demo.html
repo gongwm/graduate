@@ -11,6 +11,8 @@
 <script src="line.js"></script>
 <script src="block.js"></script>
 <script src="homopoly.js"></script>
+<script src="amplifier.js"></script>
+<script src="integrator.js"></script>
 <script src="model.js"></script>
 
 <script src="blockconfig.js"></script>
@@ -81,16 +83,39 @@
 			type : types.HOMOPOLY
 		});
 		homopoly.paper.text(20,230,'homo');
+		
+		var amplifier=Block.amplifier.use();
+		amplifier.attr({
+			x : 80,
+			y : 260
+		});
+		amplifier.data({
+			type : types.AMPLIFIER
+		});
+		amplifier.paper.text(20,280,'amp');
+		
+		var integrator=Block.integrator.use();
+		integrator.attr({
+			x : 80,
+			y : 310
+		});
+		integrator.data({
+			type : types.INTEGRATOR
+		});
+		integrator.paper.text(20,330,'int');
+		
 
 		svg.add(step);
 		svg.add(inertia);
 		svg.add(joint);
 		svg.add(scope);
 		svg.add(homopoly);
+		svg.add(amplifier);
+		svg.add(integrator);
 
 		var temp = null, type = null, m = null, m0 = null;
 
-		[step, inertia, joint, scope, homopoly].forEach(function(t) {
+		[step, inertia, joint, scope, homopoly, amplifier, integrator].forEach(function(t) {
 			t.drag(function onmove(dx, dy, x, y, e) {
 				m.translate(m0.e + dx - m.e, m0.f + dy - m.f);
 				temp.transform(m);

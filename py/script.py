@@ -29,7 +29,8 @@ def prepare():
 
 
 def compress_snap():
-    jsfiles = [str(f.absolute()) for f in snapdir.iterdir()]
+    files=['block.js','blockconfig.js','amplifier.js','homopoly.js','integrator.js','line.js','model.js']
+    jsfiles = [str(snapdir.joinpath(file)) for file in files]
     js_out_file = str(outdir.joinpath('snap-util.js'))
     compress(jsfiles, outfile=js_out_file)
 
@@ -77,3 +78,5 @@ if __name__ == '__main__':
     copy_js_src()
     compress_snap()
     publish()
+    input()
+    

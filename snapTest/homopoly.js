@@ -75,12 +75,6 @@ Block._predefHomopoly=function(svg){
 	Block.homopoly=homopoly.toDefs();
 };
 
-proto.set=function(a,b,c){
-this._a=a;
-this._b=b;
-this._c=c;
-};
-
 proto.toModel=function(){
 	return {type:this.type,a: this._a,b:this._b,c:this._c};
 };
