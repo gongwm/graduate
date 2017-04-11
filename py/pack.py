@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 def compress(files, skip=['//', '/*', '*/', '*'],
-             outfile=None,
+             outfile='out.js',
              exclude_files=['lodash', 'jquery-3.1.1.min', 'snap.svg', '.html']):
     def should_include(line):
         return not any([line.strip().startswith(s) for s in skip])
@@ -18,9 +18,6 @@ def compress(files, skip=['//', '/*', '*/', '*'],
         if idx == -1:
             idx = line.find('/*')
         return line if idx == -1 else line[:idx]
-
-    if not outfile:
-        outfile = 'out.js'
 
     with open(outfile, 'w', encoding='utf-8') as out:
         filtered_files = [file for file in files
@@ -35,7 +32,7 @@ def compress(files, skip=['//', '/*', '*/', '*'],
             elif p.is_dir():
                 compress([str(file) for file in p.iterdir()],
                          skip, outfile, exclude_files)
-                return None
+                return
             else:
                 pass
 

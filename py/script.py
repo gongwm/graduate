@@ -22,7 +22,6 @@ def clean():
                 print('deleting {}'.format(str(ff)))
             f.rmdir()
 
-
 def prepare():
     if not outdir.exists():
         outdir.mkdir()
@@ -34,6 +33,13 @@ def compress_snap():
     js_out_file = str(outdir.joinpath('snap-util.js'))
     compress(jsfiles, outfile=js_out_file)
 
+def publish():
+    'copy compressed js to project js/util folder'
+    for f in outdir.iterdir():
+        if f.is_file:
+            logging.info('publishing %s', str(f))
+            js_pub_dir = basedir.joinpath('Simulation/src/main/webapp/js/util')
+            shutil.copy(f, js_pub_dir)
 
 def copy_js_src():
     def accept(p):
@@ -46,18 +52,8 @@ def copy_js_src():
 
     file_filter(snapdir, accept, copy)
 
-
-def publish():
-    """copy compressed js to project js/util folder"""
-    for f in outdir.iterdir():
-        if f.is_file:
-            logging.info('publishing %s', str(f))
-            js_pub_dir = basedir.joinpath('Simulation/src/main/webapp/js/util')
-            shutil.copy(f, js_pub_dir)
-
-
 def file_filter(base, accept, callback):
-    """if accpect(base as path), callback(base) recursively"""
+    'if accpect(base as path), callback(base) recursively'
     if type(base) == str:
         p = Path(base)
     else:
