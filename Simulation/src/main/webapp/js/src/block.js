@@ -144,7 +144,6 @@ proto.removeMode=function(){
 
 proto.moveMode=function(){
 	var block=this.block,
-		lines=this.lines,
 		m=null,
 		m0=null,
 		_this=this;
@@ -292,6 +291,7 @@ function Inertia(){
 	this._t=1.0;
 	
 	this.type='inertia';
+	this.lines=[];
 }
 
 Inertia.prototype=new RectangleBase;
@@ -399,6 +399,7 @@ var Joint=Block.plugin(function(Block,Snap){
 		this.block=Block.joint.use().attr({id:this.id});
 		this.lineMode={};
 		this.type='joint';
+		this.lines=[];
 	}
 
 	Block.joint=null;
@@ -517,6 +518,7 @@ function Step(){
 	this.type="step";
 	this.block=Block.step.use().attr({id:this.id});
 	this._rect=Block.step.select("rect");
+	this.lines=[];
 }
 
 Step.prototype=new RectangleBase;
@@ -567,6 +569,7 @@ function Scope(){
 	this.type="scope";
 	this.block=Block.scope.use().attr({id:this.id});
 	this._rect=Block.scope.select("rect");
+	this.lines=[];
 }
 
 Scope.prototype=new RectangleBase;

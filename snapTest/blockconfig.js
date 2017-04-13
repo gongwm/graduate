@@ -119,8 +119,6 @@ var BlockConfig=(function(jQuery){
 		}
 	}
 	
-	
-	
 	proto.makeConfigDiv=function(){
 		var configs=this.configs,
 			result='',

@@ -66,7 +66,6 @@ var Model=(function(Block,Line){
 		}
 		try{
 			var line=new Line(this.components[fromId],this.components[toId]);
-			
 		}catch(e){
 			alert(e.message);
 			return;

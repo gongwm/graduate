@@ -7,6 +7,7 @@ function Amplifier(){
 	this._k=1.0;
 	
 	this.type='amplifier';
+	this.lines=[];
 }
 
 Amplifier.prototype=new RectangleBase;

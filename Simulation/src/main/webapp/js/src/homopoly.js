@@ -9,6 +9,7 @@ function Homopoly(){
 	this._c=1.0;
 	
 	this.type='homopoly';
+	this.lines=[];
 }
 
 Homopoly.prototype=new RectangleBase;

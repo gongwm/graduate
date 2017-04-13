@@ -24,8 +24,8 @@ var Line=(function(Snap){
 		this._path=draw(fromBlock,toBlock);
 		this._model=fromBlock._model;
 		
-		fromBlock.lines.push(this);
-		toBlock.lines.push(this);
+		fromBlock.addLine(this);
+		toBlock.addLine(this);
 		toBlock.lineAdded(this);
 	}
 	

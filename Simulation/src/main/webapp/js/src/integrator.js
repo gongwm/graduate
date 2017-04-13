@@ -7,6 +7,7 @@ function Integrator(){
 	this._k=1.0;
 	
 	this.type='integrator';
+	this.lines=[];
 }
 
 Integrator.prototype=new RectangleBase;

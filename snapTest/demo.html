@@ -18,22 +18,15 @@
 <script src="blockconfig.js"></script>
 
 <script type="text/javascript">
-	var svg, model,b1,j1;
+	var svg, model;
 
 	$(function() {
 		svg = Snap("#svg");
 
 		Model.predef(svg);
 		model = new Model(svg);
-		b1=model.addBlock(200,100,Block.types.INERTIAL);
-		b1.showConfig('config');
-		
-		j1=model.addBlock(300,100,Block.types.JOINT);
-		
-		model.addLine(b1.id,j1.id);
 
 		var types = Block.types;
-
 		var step = Block.step.use();
 		step.attr({
 			x : 80,
