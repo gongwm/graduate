@@ -67,7 +67,7 @@ public class Homopoly implements LinearBlock {
 		amp1.setInitValue(initValue);
 		amp2.setInitValue(amp1.getCurrent());
 		inertia.setInitValue(amp1.getCurrent());
-		adder.setInitValue(initValue);
+		adder.setInitValue(0.0);
 		moveOn();
 	}
 }

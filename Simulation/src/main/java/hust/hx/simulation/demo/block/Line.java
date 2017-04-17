@@ -16,6 +16,10 @@ public class Line {
 		}
 	}
 
+	public static Line of(Block start, Block end) {
+		return new Line(start, end);
+	}
+
 	void push() {
 		if (start instanceof Source) {
 			((Source) start).next();

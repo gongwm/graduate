@@ -84,8 +84,8 @@
 			type : types.AMPLIFIER
 		});
 		amplifier.paper.text(20, 280, 'amp');
-		
-		var integrator=Block.integrator.use();
+
+		var integrator = Block.integrator.use();
 		integrator.attr({
 			x : 80,
 			y : 310
@@ -93,7 +93,17 @@
 		integrator.data({
 			type : types.INTEGRATOR
 		});
-		integrator.paper.text(20,330,'int');
+		integrator.paper.text(20, 330, 'int');
+
+		var homopoly1 = Block.homopoly1.use();
+		homopoly1.attr({
+			x : 80,
+			y : 360
+		});
+		homopoly1.data({
+			type : types.HOMOPOLY1
+		});
+		homopoly1.paper.text(20, 380, 'homo1');
 
 		svg.add(step);
 		svg.add(inertia);
@@ -102,28 +112,28 @@
 		svg.add(homopoly);
 		svg.add(amplifier);
 		svg.add(integrator);
+		svg.add(homopoly1);
 
 		var temp = null, type = null, m = null, m0 = null;
 
-		[ step, inertia, joint, scope, homopoly, amplifier, integrator ]
-				.forEach(function(t) {
-					t.drag(function onmove(dx, dy, x, y, e) {
-						m.translate(m0.e + dx - m.e, m0.f + dy - m.f);
-						temp.transform(m);
-					}, function onstart(x, y, e) {
-						temp = t.clone();
-						type = t.data("type");
-						m = temp.transform().totalMatrix;
-						m0 = m.clone();
-						svg.append(temp);
-					}, function onend(e) {// 12 as adjustment
-						var x = +t.attr("x") + m.e + 12, y = +t.attr("y") + m.f
-								+ 12;
-						model.addBlock(x, y, type);
-						temp.remove();
-						temp = type = m = null;
-					});
-				});
+		[ step, inertia, joint, scope, homopoly, homopoly1, amplifier,
+				integrator ].forEach(function(t) {
+			t.drag(function onmove(dx, dy, x, y, e) {
+				m.translate(m0.e + dx - m.e, m0.f + dy - m.f);
+				temp.transform(m);
+			}, function onstart(x, y, e) {
+				temp = t.clone();
+				type = t.data("type");
+				m = temp.transform().totalMatrix;
+				m0 = m.clone();
+				svg.append(temp);
+			}, function onend(e) {// 12 as adjustment
+				var x = +t.attr("x") + m.e + 12, y = +t.attr("y") + m.f + 12;
+				model.addBlock(x, y, type);
+				temp.remove();
+				temp = type = m = null;
+			});
+		});
 
 		$("#bt_move").click(function() {
 			model.moveMode();

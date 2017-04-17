@@ -46,7 +46,7 @@ Block._predefHomopoly=function(svg){
 	var homopolySvg=''+
 		'<g>'+
 		'  <rect x="0" y="0" width="55" height="35" style="" fill="#ffffff" stroke="#000000" stroke-width="2"/>'+
-		'  <svg transform="scale(0.62)" width="9.966ex" height="6.032ex" style="vertical-align: -2.437ex;" viewbox="0 -1548 4290.9 2597.3" role="img" focusable="false" aria-hidden="true">'+
+		'  <svg transform="scale(0.62) translate(3,3)" width="9.966ex" height="6.032ex" style="vertical-align: -2.437ex;" viewbox="0 -1548 4290.9 2597.3" role="img" focusable="false" aria-hidden="true">'+
 		'    <g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)">'+
 		'      <g transform="translate(120,0)">'+
 		'      <rect stroke="none" width="4050" height="60" x="0" y="220"></rect>'+

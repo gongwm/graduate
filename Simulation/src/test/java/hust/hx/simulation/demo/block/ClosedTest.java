@@ -3,20 +3,12 @@ package hust.hx.simulation.demo.block;
 import java.util.ArrayList;
 import java.util.List;
 
-import hust.hx.simulation.demo.block.Config;
-import hust.hx.simulation.demo.block.ControlBlock;
-import hust.hx.simulation.demo.block.Inertia;
-import hust.hx.simulation.demo.block.Integrator;
-import hust.hx.simulation.demo.block.Adder;
-import hust.hx.simulation.demo.block.Line;
-import hust.hx.simulation.demo.block.Source;
-import hust.hx.simulation.demo.block.StepSource;
 import hust.hx.simulation.util.PrintUtil;
 import hust.hx.util.TestUtil;
 
 /**
  * <pre>
- * step->joint->inertia->integrator--->
+ * step->joint->inertia->integrator--->scope
  *         +                        |
  *         |________________________|
  * </pre>
