@@ -2,11 +2,13 @@ package hust.hx.simulation.demo.block
 
 import hust.hx.simulation.util.PrintUtil
 
-def config=Config.DEFAULT_CONFIG
+def config=Config.of(0.02,30)
 
 def step=new StepSource()
 def hp1=new Homopoly1(1.0,1.0)
 def scope=new Scope()
+
+hp1.setConfig(config)
 
 def l1=Line.of(step,hp1)
 def l2=Line.of(hp1,scope)

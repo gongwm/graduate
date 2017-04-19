@@ -78,8 +78,7 @@ public class Universe {
 	 * @param creatureCount
 	 *            搜索粒子数，决定搜索的规模
 	 */
-	public void configue(int lifeSpan, double initialGravityConstant,
-			double agingRatio, int creatureCount) {
+	public void configue(int lifeSpan, double initialGravityConstant, double agingRatio, int creatureCount) {
 		this.lifeSpan = lifeSpan;
 		this.initialGravityConstant = initialGravityConstant;
 		this.agingRatio = agingRatio;
@@ -109,8 +108,7 @@ public class Universe {
 		while (age < lifeSpan) {
 			evolveOnce();
 			++age;
-			System.out.println("age: " + age + "  cordinate: " + bestOne()
-					+ "  fitness: " + bestFitness);
+			System.out.println("age: " + age + "  cordinate: " + bestOne() + "  fitness: " + bestFitness);
 		}
 		if (executor != null) {
 			executor.shutdown();
@@ -171,13 +169,13 @@ public class Universe {
 	 * @author hx
 	 * 
 	 */
+	@FunctionalInterface
 	public interface NaturalLaw {
 		double judgeFitness(double[] cordinate);
 	}
 
 	private void agine() {// 宇宙老化一次
-		this.gravityConstant = initialGravityConstant
-				* Math.exp(-agingRatio * age / lifeSpan);
+		this.gravityConstant = initialGravityConstant * Math.exp(-agingRatio * age / lifeSpan);
 	}
 
 	private void choose() {// 求最好适应度和最差适应度
@@ -256,22 +254,15 @@ public class Universe {
 			Random rand = new Random();
 			for (Particle particle : particles) {
 				if (this != particle) {
-					vector = vector.add(this.forceFrom(particle).mapMultiply(
-							rand.nextDouble()));
+					vector = vector.add(this.forceFrom(particle).mapMultiply(rand.nextDouble()));
 				}
 			}
 			return vector;
 		}
 
 		private RealVector forceFrom(Particle particle) {// 分力
-			return particle.cordinate
-					.subtract(cordinate)
-					.mapMultiply(
-							gravityConstant
-									* inertiaMass
-									* particle.inertiaMass
-									/ (cordinate
-											.getDistance(particle.cordinate) + A_SMALL_DOUBLE));
+			return particle.cordinate.subtract(cordinate).mapMultiply(gravityConstant * inertiaMass
+					* particle.inertiaMass / (cordinate.getDistance(particle.cordinate) + A_SMALL_DOUBLE));
 		}
 
 		@Override
@@ -294,11 +285,14 @@ public class Universe {
 
 		public Range(double low, double high) {
 			if (low > high) {
-				throw new IllegalArgumentException(
-						"low must be less than or equal high");
+				throw new IllegalArgumentException("low must be less than or equal high");
 			}
 			this.low = low;
 			this.high = high;
+		}
+
+		public static Range of(double low, double high) {
+			return new Range(low, high);
 		}
 
 		public double checkRange(double currentValue) {

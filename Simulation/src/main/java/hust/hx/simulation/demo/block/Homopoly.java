@@ -35,6 +35,10 @@ public class Homopoly implements LinearBlock {
 		return aa.pow(2).multiply(bb).divide(cc).doubleValue();
 	}
 
+	void setConfig(Config config) {
+		((Inertia) inertia).setConfig(config);
+	}
+
 	@Override
 	public void next(double input) {
 		amp1.next(input);

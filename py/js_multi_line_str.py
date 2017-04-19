@@ -10,5 +10,5 @@ if __name__=='__main__':
 	with open(args[1],'r+') as f:
 		f.write('\n\n')
 		for line in f:
-			f.write("'"+line.strip()+"'+\n")
+			f.write("'"+line.rstrip()+"'+\n")
 

@@ -8,12 +8,11 @@ public class Line {
 		super();
 		this.start = start;
 		this.end = end;
+		init();
+	}
+
+	void init() {
 		end.setInitValue(start.getCurrent());
-		if (end instanceof Scope) {
-			Scope s = (Scope) end;
-			s.next(start.getCurrent());
-			s.moveOn();
-		}
 	}
 
 	public static Line of(Block start, Block end) {

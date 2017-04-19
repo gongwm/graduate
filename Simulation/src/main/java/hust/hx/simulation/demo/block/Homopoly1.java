@@ -6,6 +6,10 @@ public class Homopoly1 implements LinearBlock {
 	private Line l1, l2, l3, l4;
 
 	public Homopoly1(double a, double b) {
+		init(a, b);
+	}
+
+	private void init(double a, double b) {
 		if (b == 0) {
 			throw new IllegalArgumentException("Homopoly1: b!=0");
 		}
@@ -22,6 +26,14 @@ public class Homopoly1 implements LinearBlock {
 
 		adder.addLine(l3, Adder.ADD);
 		adder.addLine(l4, Adder.SUB);
+	}
+
+	void config(double a, double b) {
+		init(a, b);
+	}
+
+	void setConfig(Config config) {
+		((Inertia) this.inertia).setConfig(config);
 	}
 
 	@Override

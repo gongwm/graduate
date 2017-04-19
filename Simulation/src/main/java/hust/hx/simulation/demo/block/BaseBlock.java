@@ -25,5 +25,6 @@ abstract class BaseBlock implements Block {
 	@Override
 	public void setInitValue(double input) {
 		current = 0.0;
+		next = 0.0;
 	}
 }
