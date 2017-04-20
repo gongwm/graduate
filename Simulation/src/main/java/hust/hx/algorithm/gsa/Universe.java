@@ -21,6 +21,8 @@ import org.apache.commons.math3.linear.RealVector;
  * 宇宙的属性：寿命（lifeSpan）、初始引力常数（initialGravityConstant）、老化系数（agingRatio）
  * 和creatureCount个粒子。<br/>
  * 参考：引力搜索算法的相关文献。<br/>
+ * 参考：A Gravitational Search Algorithm, Information sciences, vol. 179, no. 13,
+ * pp. 2232-2248, 2009.
  * 
  * @version 2016-7-22 10:13:57 引入了多线程，以并行计算适应度。
  * @author hx
@@ -30,12 +32,12 @@ public class Universe {
 	private List<Range> spaces;
 
 	private int lifeSpan = 1000;// 控制参数
-	private double initialGravityConstant = 3.0;
-	private double agingRatio = 9.0;
+	private double initialGravityConstant = 100.0;
+	private double agingRatio = 20.0;
 	private int creatureCount = 10;
 
 	private int age;// 全局变量
-	private int dimension;
+	private final int dimension;
 	private List<Particle> particles;
 
 	private double gravityConstant;// 缓存
@@ -43,8 +45,17 @@ public class Universe {
 	private double worstFitness;
 	private double totalMass;
 
+	private Mode mode = Mode.SMALL_BETTER;
+
+	enum Mode {
+		SMALL_BETTER, BIG_BETTER
+	}
+
+	private int kbest = creatureCount;
+	private int finalPercent = 2;
+
 	private ExecutorService executor = null;
-	private int threadsCount = Runtime.getRuntime().availableProcessors();
+	public static final int RECOMMENDED_THREADS_COUNT = Runtime.getRuntime().availableProcessors();
 
 	/**
 	 * 构造方法。
@@ -78,11 +89,19 @@ public class Universe {
 	 * @param creatureCount
 	 *            搜索粒子数，决定搜索的规模
 	 */
-	public void configue(int lifeSpan, double initialGravityConstant, double agingRatio, int creatureCount) {
+	public void configure(int lifeSpan, double initialGravityConstant, double agingRatio, int creatureCount) {
 		this.lifeSpan = lifeSpan;
 		this.initialGravityConstant = initialGravityConstant;
 		this.agingRatio = agingRatio;
 		this.creatureCount = creatureCount;
+		this.kbest = creatureCount;
+		init();
+	}
+
+	public void configure(int lifeSpan, int creatureCount) {
+		this.lifeSpan = lifeSpan;
+		this.creatureCount = creatureCount;
+		this.kbest = creatureCount;
 		init();
 	}
 
@@ -91,24 +110,22 @@ public class Universe {
 		for (int i = 0; i < creatureCount; ++i) {
 			particles.add(new Particle());
 		}
-		executor = null;
-		if (threadsCount != 0) {
-			executor = Executors.newFixedThreadPool(threadsCount);
-		}
 	}
 
 	public void configueThreadsCount(int threadsCount) {
 		if (threadsCount < 2) {
 			threadsCount = 0;
 		}
-		this.threadsCount = threadsCount;
+		executor = null;
+		if (threadsCount != 0) {
+			executor = Executors.newFixedThreadPool(threadsCount);
+		}
 	}
 
 	public void rockAndRoll() {
 		while (age < lifeSpan) {
 			evolveOnce();
 			++age;
-			System.out.println("age: " + age + "  cordinate: " + bestOne() + "  fitness: " + bestFitness);
 		}
 		if (executor != null) {
 			executor.shutdown();
@@ -116,7 +133,19 @@ public class Universe {
 	}
 
 	private void evolveOnce() {
-		if (threadsCount != 0) {
+		calculateFitness();
+		agine();
+		choose();
+
+		System.out.println("age: " + age + " cordinate: " + bestOne() + " fitness: " + bestFitness);
+
+		calculateKBest();
+		sortParticlesIndescendingOrder();
+		move();
+	}
+
+	private void calculateFitness() {
+		if (executor != null) {
 			List<Future<Particle>> result = new ArrayList<>();
 			for (final Particle p : particles) {
 				result.add(executor.submit(new Callable<Particle>() {
@@ -139,11 +168,24 @@ public class Universe {
 				p.judgeFitness();
 			}
 		}
-		agine();
-		choose();
-		for (Particle p : particles) {
-			p.currentMass();
-		}
+	}
+
+	private void sortParticlesIndescendingOrder() {
+		Collections.sort(particles);
+		Collections.reverse(particles);
+	}
+
+	private void agine() {// 宇宙老化一次
+		this.gravityConstant = initialGravityConstant * Math.exp(-agingRatio * age / lifeSpan);
+	}
+
+	private void choose() {// 求最好适应度和最差适应度
+		this.bestFitness = Collections.max(particles).fitness;
+		this.worstFitness = Collections.min(particles).fitness;
+	}
+
+	private void move() {
+		calculateMass();
 		totalMass();
 		for (Particle p : particles) {
 			p.currentInertiaMass();
@@ -152,6 +194,24 @@ public class Universe {
 		for (Particle p : particles) {
 			p.move();
 		}
+	}
+
+	private void calculateMass() {
+		for (Particle p : particles) {
+			p.currentMass();
+		}
+	}
+
+	private void totalMass() {// 总质量
+		totalMass = 0;
+		for (Particle particle : particles) {
+			totalMass += particle.mass;
+		}
+	}
+
+	private void calculateKBest() {
+		double percent = finalPercent + (1 - 1.0 * age / lifeSpan) * (100 - finalPercent);
+		kbest = (int) Math.round(creatureCount * percent / 100);
 	}
 
 	public RealVector bestOne() {
@@ -172,22 +232,6 @@ public class Universe {
 	@FunctionalInterface
 	public interface NaturalLaw {
 		double judgeFitness(double[] cordinate);
-	}
-
-	private void agine() {// 宇宙老化一次
-		this.gravityConstant = initialGravityConstant * Math.exp(-agingRatio * age / lifeSpan);
-	}
-
-	private void choose() {// 求最好适应度和最差适应度
-		this.bestFitness = Collections.max(particles).fitness;
-		this.worstFitness = Collections.min(particles).fitness;
-	}
-
-	private void totalMass() {// 总质量
-		totalMass = 0;
-		for (Particle particle : particles) {
-			totalMass += particle.mass;
-		}
 	}
 
 	/**
@@ -235,11 +279,6 @@ public class Universe {
 			for (int i = 0; i < dimension; ++i) {
 				rv.setEntry(i, spaces.get(i).checkRange(rv.getEntry(i)));
 			}
-			if (((double) age) / lifeSpan > 0.9) {
-				if (law.judgeFitness(rv.toArray()) < bestFitness) {
-					return;
-				}
-			}
 			cordinate = rv;
 		}
 
@@ -251,10 +290,10 @@ public class Universe {
 
 		private RealVector totalForce() {// 合力
 			RealVector vector = new ArrayRealVector(dimension);
-			Random rand = new Random();
-			for (Particle particle : particles) {
-				if (this != particle) {
-					vector = vector.add(this.forceFrom(particle).mapMultiply(rand.nextDouble()));
+			for (int i = 0; i < kbest; ++i) {
+				Particle particle = particles.get(i);
+				if (particle != this) {
+					vector = vector.add(this.forceFrom(particle).ebeMultiply(generateRandomVector(dimension)));
 				}
 			}
 			return vector;
@@ -267,13 +306,12 @@ public class Universe {
 
 		@Override
 		public int compareTo(Particle o) {// 以适应度作为比较标准
-			if (fitness > o.fitness) {
-				return 1;
+			int result = Double.compare(fitness, o.fitness);
+			if (mode == Mode.BIG_BETTER) {
+				return result;
+			} else {
+				return -1 * result;
 			}
-			if (fitness < o.fitness) {
-				return -1;
-			}
-			return 0;
 		}
 	}
 
@@ -335,10 +373,9 @@ public class Universe {
 			@Override
 			public double judgeFitness(double[] cordinate) {
 				double d = cordinate[0];
-				return 1.0 / Math.abs((d * d - 3));
+				return Math.abs((d * d - 3));
 			}
 		}, new Range(1, 2));
-		u.configue(1000, 3, 10, 20);
 		u.rockAndRoll();
 
 		System.out.println(u.bestOne());

@@ -11,7 +11,8 @@ public class Homopoly1 implements LinearBlock {
 
 	private void init(double a, double b) {
 		if (b == 0) {
-			throw new IllegalArgumentException("Homopoly1: b!=0");
+			//throw new IllegalArgumentException("Homopoly1: b!=0");
+			b=0.0000001;
 		}
 
 		amp1 = new Amplifier(a / b);

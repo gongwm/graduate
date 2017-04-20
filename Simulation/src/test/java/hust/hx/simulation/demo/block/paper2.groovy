@@ -99,12 +99,12 @@ class RegularSystem{
 	}
 }
 
-def fitness(origin,output){
+def fitness(List origin,List output){
 	def res=0.0
 	for(int i=0;i<output.size();++i){
 		res+=(output[i]-origin[i])**2
 	}
-	return 1/res
+	return res
 }
 
 def rs=new RegularSystem(0.8, 3.36, 0.2, 0.05)
@@ -116,10 +116,10 @@ PrintUtil.print{pw->
 	}
 }
 
-def btRange=GsaRange.of(0, 1)
-def tdRange=GsaRange.of(0, 5)
-def tyRange=GsaRange.of(0, 1)
-def tiRange=GsaRange.of(0, 1)
+def btRange=GsaRange.of(0.001, 1)
+def tdRange=GsaRange.of(0.001, 5)
+def tyRange=GsaRange.of(0.001, 1)
+def tiRange=GsaRange.of(0.001, 1)
 Universe u=new Universe({cordinate->
 	def bt=cordinate[0]
 	def td=cordinate[1]
@@ -128,18 +128,22 @@ Universe u=new Universe({cordinate->
 	def sys=new RegularSystem(bt,td,ty,ti)
 	sys.simulate()
 	def output=sys.output
-	return fitness(origin,output)
+	def f=fitness(origin,output)
+	return f
 },btRange,tdRange,tyRange,tiRange)
-
-u.configue(1000, 2, 5, 50);
-
-TestUtil.timeIt{
-	u.rockAndRoll();
-}
+u.configure(1000,50)
+u.configueThreadsCount(4)
+TestUtil.timeIt{ u.rockAndRoll(); }
 
 System.out.println(u.bestOne());
 System.out.println("fitness: " + u.bestFitness());
 
-
-
-
+def rsys=new RegularSystem(*(u.bestOne().toArray()))
+rsys.simulate()
+def time=rsys.time
+def output=rsys.output
+PrintUtil.print{p->
+	time.eachWithIndex{v,i->
+		p.println("$v ${output[i]}")
+	}
+}

@@ -9,7 +9,8 @@ public class Homopoly implements LinearBlock {
 
 	public Homopoly(double a, double b, double c) {
 		if (c == 0) {
-			throw new IllegalArgumentException("Homopoly: c != 0.0");
+//			throw new IllegalArgumentException("Homopoly: c != 0.0");
+			c=0.0000001;
 		}
 
 		double x = calculateX(a, b, c), y = a - x;
