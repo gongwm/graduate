@@ -38,7 +38,6 @@ ClassicGSA u=new ClassicGSA({cordinate->
 	return f
 },btRange,tdRange,tyRange)
 u.configure(1000,20)
-u.configueThreadsCount(2)
 TestUtil.timeIt{ u.rockAndRoll(); }
 
 

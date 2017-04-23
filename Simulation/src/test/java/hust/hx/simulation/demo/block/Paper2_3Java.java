@@ -47,7 +47,7 @@ public class Paper2_3Java {
 					RegularSys sys = tr.get();
 					sys.reset(bt, td, ty, 0.05);
 					sys.simulate();
-					List<Double> out = (List<Double>) sys.getOutput();
+					List<Double> out = sys.getOutput();
 					List<Double> res = new ArrayList<>(out);
 					return res;
 				}
