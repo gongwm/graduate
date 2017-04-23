@@ -5,11 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
@@ -25,20 +20,21 @@ import org.apache.commons.math3.linear.RealVector;
  * pp. 2232-2248, 2009.
  * 
  * @version 2016-7-22 10:13:57 引入了多线程，以并行计算适应度。
+ * @version 2017-4-22 00:22:40 采用java8的parallelStream默认提供多线程计算。
  * @author hx
  */
-public class Universe {
-	private NaturalLaw law;// 输入参数
+public class ClassicGSA {
+	private NaturalLaw law;
 	private List<Range> spaces;
+	protected List<Particle> particles = new ArrayList<Particle>();;
 
 	private int lifeSpan = 1000;// 控制参数
 	private double initialGravityConstant = 100.0;
 	private double agingRatio = 20.0;
-	private int creatureCount = 10;
+	protected int creatureCount = 20;
 
 	private int age;// 全局变量
-	private final int dimension;
-	private List<Particle> particles;
+	protected final int dimension;
 
 	private double gravityConstant;// 缓存
 	private double bestFitness;
@@ -51,11 +47,12 @@ public class Universe {
 		SMALL_BETTER, BIG_BETTER
 	}
 
+	public void setMode(Mode mode) {
+		this.mode = mode;
+	}
+
 	private int kbest = creatureCount;
 	private int finalPercent = 2;
-
-	private ExecutorService executor = null;
-	public static final int RECOMMENDED_THREADS_COUNT = Runtime.getRuntime().availableProcessors();
 
 	/**
 	 * 构造方法。
@@ -65,7 +62,7 @@ public class Universe {
 	 * @param spaces
 	 *            空间限制。Range的个数决定空间的维数，范围决定某维数字的取值范围
 	 */
-	public Universe(NaturalLaw law, List<Range> spaces) {
+	public ClassicGSA(NaturalLaw law, List<Range> spaces) {
 		this.law = law;
 		this.spaces = spaces;
 		this.dimension = spaces.size();
@@ -73,7 +70,13 @@ public class Universe {
 		init();
 	}
 
-	public Universe(NaturalLaw law, Range... spaces) {
+	protected void init() {
+		for (int i = 0; i < creatureCount; ++i) {
+			particles.add(new Particle());
+		}
+	}
+
+	public ClassicGSA(NaturalLaw law, Range... spaces) {
 		this(law, Arrays.asList(spaces));
 	}
 
@@ -82,22 +85,9 @@ public class Universe {
 	 * 
 	 * @param lifeSpan
 	 *            寿命，决定了迭代次数
-	 * @param initialGravityConstant
-	 *            初始引力常数，决定了步长
-	 * @param agingRatio
-	 *            老化系数，决定了步长变小的速率
 	 * @param creatureCount
 	 *            搜索粒子数，决定搜索的规模
 	 */
-	public void configure(int lifeSpan, double initialGravityConstant, double agingRatio, int creatureCount) {
-		this.lifeSpan = lifeSpan;
-		this.initialGravityConstant = initialGravityConstant;
-		this.agingRatio = agingRatio;
-		this.creatureCount = creatureCount;
-		this.kbest = creatureCount;
-		init();
-	}
-
 	public void configure(int lifeSpan, int creatureCount) {
 		this.lifeSpan = lifeSpan;
 		this.creatureCount = creatureCount;
@@ -105,30 +95,10 @@ public class Universe {
 		init();
 	}
 
-	private void init() {
-		particles = new ArrayList<Particle>();
-		for (int i = 0; i < creatureCount; ++i) {
-			particles.add(new Particle());
-		}
-	}
-
-	public void configueThreadsCount(int threadsCount) {
-		if (threadsCount < 2) {
-			threadsCount = 0;
-		}
-		executor = null;
-		if (threadsCount != 0) {
-			executor = Executors.newFixedThreadPool(threadsCount);
-		}
-	}
-
 	public void rockAndRoll() {
 		while (age < lifeSpan) {
 			evolveOnce();
 			++age;
-		}
-		if (executor != null) {
-			executor.shutdown();
 		}
 	}
 
@@ -136,41 +106,18 @@ public class Universe {
 		calculateFitness();
 		agine();
 		choose();
-
-		System.out.println("age: " + age + " cordinate: " + bestOne() + " fitness: " + bestFitness);
-
+		System.out.println(
+				"age: " + age + " cordinate: " + Collections.max(particles).cordinate + " fitness: " + bestFitness);
 		calculateKBest();
-		sortParticlesIndescendingOrder();
+		sortParticlesInDescendingOrder();
 		move();
 	}
 
-	private void calculateFitness() {
-		if (executor != null) {
-			List<Future<Particle>> result = new ArrayList<>();
-			for (final Particle p : particles) {
-				result.add(executor.submit(new Callable<Particle>() {
-					@Override
-					public Particle call() throws Exception {
-						p.judgeFitness();
-						return p;
-					}
-				}));
-			}
-			for (Future<Particle> f : result) {
-				try {
-					f.get();
-				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
-				}
-			}
-		} else {
-			for (Particle p : particles) {
-				p.judgeFitness();
-			}
-		}
+	protected void calculateFitness() {
+		particles.parallelStream().forEach(p -> p.judgeFitness());
 	}
 
-	private void sortParticlesIndescendingOrder() {
+	private void sortParticlesInDescendingOrder() {
 		Collections.sort(particles);
 		Collections.reverse(particles);
 	}
@@ -186,27 +133,18 @@ public class Universe {
 
 	private void move() {
 		calculateMass();
-		totalMass();
-		for (Particle p : particles) {
-			p.currentInertiaMass();
-			p.acceleration();
-		}
-		for (Particle p : particles) {
-			p.move();
-		}
+		doMove();
 	}
 
-	private void calculateMass() {
-		for (Particle p : particles) {
-			p.currentMass();
-		}
+	protected void calculateMass() {
+		particles.stream().forEach(p -> p.currentMass());
+		this.totalMass = particles.stream().mapToDouble(p -> p.mass).sum();
+		particles.stream().forEach(p -> p.currentInertiaMass());
 	}
 
-	private void totalMass() {// 总质量
-		totalMass = 0;
-		for (Particle particle : particles) {
-			totalMass += particle.mass;
-		}
+	private void doMove() {
+		particles.stream().forEach(p -> p.acceleration());
+		particles.stream().forEach(p -> p.move());
 	}
 
 	private void calculateKBest() {
@@ -214,8 +152,8 @@ public class Universe {
 		kbest = (int) Math.round(creatureCount * percent / 100);
 	}
 
-	public RealVector bestOne() {
-		return Collections.max(particles).cordinate;
+	public double[] bestOne() {
+		return Collections.max(particles).cordinate.toArray();
 	}
 
 	public double bestFitness() {
@@ -241,7 +179,7 @@ public class Universe {
 	 * @author hx
 	 * 
 	 */
-	private class Particle implements Comparable<Particle> {
+	class Particle implements Comparable<Particle> {
 		private RealVector cordinate;
 
 		private RealVector velocity;
@@ -249,7 +187,7 @@ public class Universe {
 		private static final double A_SMALL_DOUBLE = 2.2204e-16;
 
 		private double mass;
-		private double inertiaMass;
+		protected double inertiaMass;
 		private RealVector acceleration;
 
 		Particle() {
@@ -257,35 +195,21 @@ public class Universe {
 			this.velocity = new ArrayRealVector(dimension);
 		}
 
-		private void currentMass() {// 粒子当前质量
-			this.mass = (fitness - worstFitness) / (bestFitness - worstFitness);
-		}
-
-		private void currentInertiaMass() {// 当前惯性质量
-			double im = mass / totalMass;
-			this.inertiaMass = im == 0 ? A_SMALL_DOUBLE : im;
-		}
-
 		private void judgeFitness() {// 粒子当前适应度
 			this.fitness = law.judgeFitness(cordinate.toArray());
 		}
 
-		private void acceleration() {// 求加速度
+		private void currentMass() {// 粒子当前质量
+			this.mass = (fitness - worstFitness) / (bestFitness - worstFitness);
+		}
+
+		protected void currentInertiaMass() {// 当前惯性质量
+			double im = mass / totalMass;
+			this.inertiaMass = im == 0 ? A_SMALL_DOUBLE : im;
+		}
+
+		protected void acceleration() {// 求加速度
 			this.acceleration = totalForce().mapDivide(inertiaMass);
-		}
-
-		private void move() {// 在其他粒子的合力作用下移向下个坐标
-			RealVector rv = cordinate.add(nextVelocity());
-			for (int i = 0; i < dimension; ++i) {
-				rv.setEntry(i, spaces.get(i).checkRange(rv.getEntry(i)));
-			}
-			cordinate = rv;
-		}
-
-		private RealVector nextVelocity() {// 引力作用下的速度
-			RealVector randVector = generateRandomVector(dimension);
-			velocity = velocity.ebeMultiply(randVector).add(acceleration);
-			return velocity;
 		}
 
 		private RealVector totalForce() {// 合力
@@ -302,6 +226,20 @@ public class Universe {
 		private RealVector forceFrom(Particle particle) {// 分力
 			return particle.cordinate.subtract(cordinate).mapMultiply(gravityConstant * inertiaMass
 					* particle.inertiaMass / (cordinate.getDistance(particle.cordinate) + A_SMALL_DOUBLE));
+		}
+
+		protected void move() {// 在其他粒子的合力作用下移向下个坐标
+			RealVector rv = cordinate.add(nextVelocity());
+			for (int i = 0; i < dimension; ++i) {
+				rv.setEntry(i, spaces.get(i).checkRange(rv.getEntry(i)));
+			}
+			cordinate = rv;
+		}
+
+		private RealVector nextVelocity() {// 引力作用下的速度
+			RealVector randVector = generateRandomVector(dimension);
+			velocity = velocity.ebeMultiply(randVector).add(acceleration);
+			return velocity;
 		}
 
 		@Override
@@ -369,7 +307,7 @@ public class Universe {
 	}
 
 	public static void main(String[] args) {// 计算根号3。
-		Universe u = new Universe(new NaturalLaw() {
+		ClassicGSA u = new ClassicGSA(new NaturalLaw() {
 			@Override
 			public double judgeFitness(double[] cordinate) {
 				double d = cordinate[0];

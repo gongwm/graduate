@@ -1,6 +1,6 @@
 package hust.hx.simulation.demo.block
 
-import java.util.List
+import hust.hx.util.TestUtil
 
 def fitness(List origin,List output){
 	def res=0.0
@@ -11,10 +11,12 @@ def fitness(List origin,List output){
 }
 
 def rs=new RegularSystem(0.8, 3.36, 0.2, 0.05)
-rs.simulate()
+
+TestUtil.timeIt{rs.simulate()}
+
 def out0=rs.output
 
-def rs1=new RegularSystem(1, 5, 0.2, 0.05)
+def rs1=new RegularSystem(0.8, 5, 0.2, 0.05)
 rs1.simulate()
 def out1=rs1.output
 

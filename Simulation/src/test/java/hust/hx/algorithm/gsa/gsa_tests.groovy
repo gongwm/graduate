@@ -1,13 +1,20 @@
 package hust.hx.algorithm.gsa
 
-import hust.hx.algorithm.gsa.Universe.Range as GsaRange
-import static hust.hx.algorithm.gsa.GSATestUtil.*
 import static java.lang.Math.*
+
+import hust.hx.algorithm.gsa.ClassicGSA.Range as GsaRange
+import hust.hx.util.TestUtil
 
 def r=new GsaRange(-100,100)
 
 def range={l,h->
 	new GsaRange(l,h)
+}
+
+def nlist(obj,int n){
+	def res=[]
+	n.times{ res<<obj }
+	res
 }
 
 def tests=[
@@ -46,10 +53,10 @@ def tests=[
 
 def runTest={test->
 	def data=tests[test]
-	def u=new Universe(data[0],data[1])
+	def u=new WeighedGSA(data[0],data[1])
 	u.configure(1000,50)
-	u.rockAndRoll()
+	TestUtil.timeIt{u.rockAndRoll()}
 }
 
-runTest('test10')
+runTest('test15')
 

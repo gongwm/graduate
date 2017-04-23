@@ -1,8 +1,8 @@
 package hust.hx.simulation.demo.block
 
-import hust.hx.algorithm.gsa.Universe
+import hust.hx.algorithm.gsa.ClassicGSA
+import hust.hx.algorithm.gsa.ClassicGSA.Range as GsaRange
 import hust.hx.simulation.util.PrintUtil
-import hust.hx.algorithm.gsa.Universe.Range as GsaRange
 import hust.hx.util.TestUtil
 
 
@@ -27,7 +27,8 @@ def btRange=GsaRange.of(0.001, 1)
 def tdRange=GsaRange.of(0.001, 5)
 def tyRange=GsaRange.of(0.001, 1)
 def tiRange=GsaRange.of(0.001, 1)
-Universe u=new Universe({cordinate->
+
+def u=new ClassicGSA({cordinate->
 	def bt=cordinate[0]
 	def td=cordinate[1]
 	def sys=new RegularSystem(bt,td,0.2,0.05)
@@ -35,11 +36,10 @@ Universe u=new Universe({cordinate->
 	def output=sys.output
 	def f=fitness(origin,output)
 	return f
-},btRange,tdRange)
-u.configure(1000,50)
-u.configueThreadsCount(2)
-TestUtil.timeIt{ u.rockAndRoll(); }
+},[btRange,tdRange])
 
+u.configure(1000,20)
+TestUtil.timeIt{ u.rockAndRoll(); }
 
 System.out.println(u.bestOne());
 System.out.println("fitness: " + u.bestFitness());
@@ -54,8 +54,3 @@ PrintUtil.print{p->
 		p.println("$v ${output[i]}")
 	}
 }
-
-
-
-
-
