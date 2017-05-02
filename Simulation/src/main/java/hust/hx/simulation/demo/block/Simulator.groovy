@@ -129,6 +129,8 @@ class BlockFactory{
 					b=new Scope();break;
 			case 'homopoly':
 					b=new Homopoly(info.a as double,info.b as double,info.c as double);break;
+			case 'homopoly1':
+					b=new Homopoly1(info.a as double,info.b as double);break;
 			case 'integrator':
 					b=new Integrator(info.k as double);break;
 			default: throw new IllegalArgumentException('no such model');break;

@@ -11,7 +11,7 @@ public class InertiaTest {
 		TestUtil.timeIt(() -> simulate()); // 计时
 		TestUtil.printFirst(out, 10);
 
-		PrintUtil.printTo("C:\\out.txt", w -> { // 打印
+		PrintUtil.printTo("D:\\out.txt", w -> { // 打印
 			for (int i = 0; i < time.length; ++i) {
 				w.println(String.format("%f %f", time[i], out[i]));
 			}

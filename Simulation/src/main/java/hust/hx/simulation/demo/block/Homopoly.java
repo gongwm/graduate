@@ -9,7 +9,8 @@ public class Homopoly implements LinearBlock {
 
 	public Homopoly(double a, double b, double c) {
 		if (c == 0) {
-			throw new IllegalArgumentException("Homopoly: c != 0.0");
+//			throw new IllegalArgumentException("Homopoly: c != 0.0");
+			c=0.0000001;
 		}
 
 		double x = calculateX(a, b, c), y = a - x;
@@ -33,6 +34,10 @@ public class Homopoly implements LinearBlock {
 		BigDecimal bb = BigDecimal.valueOf(b);
 		BigDecimal cc = BigDecimal.valueOf(c);
 		return aa.pow(2).multiply(bb).divide(cc).doubleValue();
+	}
+
+	void setConfig(Config config) {
+		((Inertia) inertia).setConfig(config);
 	}
 
 	@Override
@@ -67,7 +72,7 @@ public class Homopoly implements LinearBlock {
 		amp1.setInitValue(initValue);
 		amp2.setInitValue(amp1.getCurrent());
 		inertia.setInitValue(amp1.getCurrent());
-		adder.setInitValue(initValue);
+		adder.setInitValue(0.0);
 		moveOn();
 	}
 }

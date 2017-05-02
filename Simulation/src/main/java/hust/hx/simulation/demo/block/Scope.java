@@ -22,4 +22,12 @@ public class Scope extends BaseBlock implements ControlBlock {
 	public String toString() {
 		return LangUtil.concatWithComma(LangUtil.toPrimitiveDoubleArray(data));
 	}
+
+	@Override
+	public void setInitValue(double input) {
+		super.setInitValue(input);
+		data.clear();
+		next(input);
+		moveOn();
+	}
 }

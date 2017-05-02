@@ -37,6 +37,12 @@ public class Inertia extends BaseBlock implements LinearBlock {
 		initRatio();
 	}
 
+	void config(double k, double t) {
+		this.k = k;
+		this.t = t;
+		initRatio();
+	}
+
 	@Override
 	public String toString() {
 		return String.format("block inertia. k: %f, t: %f", k, t);

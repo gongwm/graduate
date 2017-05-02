@@ -5,11 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
@@ -21,30 +16,49 @@ import org.apache.commons.math3.linear.RealVector;
  * 宇宙的属性：寿命（lifeSpan）、初始引力常数（initialGravityConstant）、老化系数（agingRatio）
  * 和creatureCount个粒子。<br/>
  * 参考：引力搜索算法的相关文献。<br/>
+ * 参考：A Gravitational Search Algorithm, Information sciences, vol. 179, no. 13,
+ * pp. 2232-2248, 2009.
  * 
  * @version 2016-7-22 10:13:57 引入了多线程，以并行计算适应度。
+ * @version 2017-4-22 00:22:40 采用java8的parallelStream默认提供多线程计算。
  * @author hx
  */
-public class Universe {
-	private NaturalLaw law;// 输入参数
+public class ClassicGSA {
+	private NaturalLaw law;
 	private List<Range> spaces;
+	protected List<Particle> particles = new ArrayList<Particle>();;
 
 	private int lifeSpan = 1000;// 控制参数
+<<<<<<< HEAD:Simulation/src/main/java/hust/hx/algorithm/gsa/Universe.java
 	private double initialGravityConstant = 100;
 	private double agingRatio = 20.0;
 	private int creatureCount = 20;
+=======
+	private double initialGravityConstant = 100.0;
+	private double agingRatio = 20.0;
+	protected int creatureCount = 20;
+>>>>>>> cebaa371b485f431df8011b07c9769427803ee77:Simulation/src/main/java/hust/hx/algorithm/gsa/ClassicGSA.java
 
 	private int age;// 全局变量
-	private int dimension;
-	private List<Particle> particles;
+	protected final int dimension;
 
 	private double gravityConstant;// 缓存
 	private double bestFitness;
 	private double worstFitness;
 	private double totalMass;
 
-	private ExecutorService executor = null;
-	private int threadsCount = Runtime.getRuntime().availableProcessors();
+	private Mode mode = Mode.SMALL_BETTER;
+
+	enum Mode {
+		SMALL_BETTER, BIG_BETTER
+	}
+
+	public void setMode(Mode mode) {
+		this.mode = mode;
+	}
+
+	private int kbest = creatureCount;
+	private int finalPercent = 2;
 
 	private Mode mode = Mode.SMALL_BETTER;
 
@@ -64,7 +78,7 @@ public class Universe {
 	 * @param spaces
 	 *            空间限制。Range的个数决定空间的维数，范围决定某维数字的取值范围
 	 */
-	public Universe(NaturalLaw law, List<Range> spaces) {
+	public ClassicGSA(NaturalLaw law, List<Range> spaces) {
 		this.law = law;
 		this.spaces = spaces;
 		this.dimension = spaces.size();
@@ -72,7 +86,13 @@ public class Universe {
 		init();
 	}
 
-	public Universe(NaturalLaw law, Range... spaces) {
+	protected void init() {
+		for (int i = 0; i < creatureCount; ++i) {
+			particles.add(new Particle());
+		}
+	}
+
+	public ClassicGSA(NaturalLaw law, Range... spaces) {
 		this(law, Arrays.asList(spaces));
 	}
 
@@ -81,93 +101,75 @@ public class Universe {
 	 * 
 	 * @param lifeSpan
 	 *            寿命，决定了迭代次数
-	 * @param initialGravityConstant
-	 *            初始引力常数，决定了步长
-	 * @param agingRatio
-	 *            老化系数，决定了步长变小的速率
 	 * @param creatureCount
 	 *            搜索粒子数，决定搜索的规模
 	 */
-	public void configue(int lifeSpan, double initialGravityConstant,
-			double agingRatio, int creatureCount) {
+	public void configure(int lifeSpan, int creatureCount) {
 		this.lifeSpan = lifeSpan;
-		this.initialGravityConstant = initialGravityConstant;
-		this.agingRatio = agingRatio;
 		this.creatureCount = creatureCount;
+		this.kbest = creatureCount;
 		init();
-	}
-
-	private void init() {
-		particles = new ArrayList<Particle>();
-		for (int i = 0; i < creatureCount; ++i) {
-			particles.add(new Particle());
-		}
-		executor = null;
-		if (threadsCount != 0) {
-			executor = Executors.newFixedThreadPool(threadsCount);
-		}
-	}
-
-	public void configueThreadsCount(int threadsCount) {
-		if (threadsCount < 2) {
-			threadsCount = 0;
-		}
-		this.threadsCount = threadsCount;
 	}
 
 	public void rockAndRoll() {
 		while (age < lifeSpan) {
 			evolveOnce();
 			++age;
-			System.out.println("age: " + age + "  cordinate: " + bestOne()
-					+ "  fitness: " + bestFitness);
-		}
-		if (executor != null) {
-			executor.shutdown();
 		}
 	}
 
 	private void evolveOnce() {
-		if (threadsCount != 0) {
-			List<Future<Particle>> result = new ArrayList<>();
-			for (final Particle p : particles) {
-				result.add(executor.submit(new Callable<Particle>() {
-					@Override
-					public Particle call() throws Exception {
-						p.judgeFitness();
-						return p;
-					}
-				}));
-			}
-			for (Future<Particle> f : result) {
-				try {
-					f.get();
-				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
-				}
-			}
-		} else {
-			for (Particle p : particles) {
-				p.judgeFitness();
-			}
-		}
+		calculateFitness();
 		agine();
 		choose();
-		for (Particle p : particles) {
-			p.currentMass();
-		}
-		totalMass();
-		for (Particle p : particles) {
-			p.currentInertiaMass();
-			p.acceleration();
-		}
-		for (Particle p : particles) {
-			p.move();
-		}
+		System.out.println(
+				"age: " + age + " cordinate: " + Collections.max(particles).cordinate + " fitness: " + bestFitness);
+		calculateKBest();
+		sortParticlesInDescendingOrder();
+		move();
 	}
 
-	public RealVector bestOne() {
-		return Collections.max(particles).cordinate;
+	protected void calculateFitness() {
+		particles.parallelStream().forEach(p -> p.judgeFitness());
+	}
+
+	private void sortParticlesInDescendingOrder() {
+		Collections.sort(particles);
+		Collections.reverse(particles);
+	}
+
+	private void agine() {// 宇宙老化一次
+		this.gravityConstant = initialGravityConstant * Math.exp(-agingRatio * age / lifeSpan);
+	}
+
+	private void choose() {// 求最好适应度和最差适应度
+		this.bestFitness = Collections.max(particles).fitness;
+		this.worstFitness = Collections.min(particles).fitness;
+	}
+
+	private void move() {
+		calculateMass();
+		doMove();
+	}
+
+	protected void calculateMass() {
+		particles.stream().forEach(p -> p.currentMass());
+		this.totalMass = particles.stream().mapToDouble(p -> p.mass).sum();
+		particles.stream().forEach(p -> p.currentInertiaMass());
+	}
+
+	private void doMove() {
+		particles.stream().forEach(p -> p.acceleration());
+		particles.stream().forEach(p -> p.move());
+	}
+
+	private void calculateKBest() {
+		double percent = finalPercent + (1 - 1.0 * age / lifeSpan) * (100 - finalPercent);
+		kbest = (int) Math.round(creatureCount * percent / 100);
+	}
+
+	public double[] bestOne() {
+		return Collections.max(particles).cordinate.toArray();
 	}
 
 	public double bestFitness() {
@@ -181,10 +183,12 @@ public class Universe {
 	 * @author hx
 	 * 
 	 */
+	@FunctionalInterface
 	public interface NaturalLaw {
 		double judgeFitness(double[] cordinate);
 	}
 
+<<<<<<< HEAD:Simulation/src/main/java/hust/hx/algorithm/gsa/Universe.java
 	private void agine() {// 宇宙老化一次
 		this.gravityConstant = initialGravityConstant
 				* Math.exp(-agingRatio * age / lifeSpan);
@@ -207,6 +211,8 @@ public class Universe {
 		}
 	}
 
+=======
+>>>>>>> cebaa371b485f431df8011b07c9769427803ee77:Simulation/src/main/java/hust/hx/algorithm/gsa/ClassicGSA.java
 	/**
 	 * 宇宙中唯一的东西：粒子。<br/>
 	 * 粒子的属性：坐标、速度、加速度、质量、惯性质量、适应度
@@ -214,7 +220,7 @@ public class Universe {
 	 * @author hx
 	 * 
 	 */
-	private class Particle implements Comparable<Particle> {
+	class Particle implements Comparable<Particle> {
 		private RealVector cordinate;
 
 		private RealVector velocity;
@@ -222,7 +228,7 @@ public class Universe {
 		private static final double A_SMALL_DOUBLE = 2.2204e-16;
 
 		private double mass;
-		private double inertiaMass;
+		protected double inertiaMass;
 		private RealVector acceleration;
 
 		Particle() {
@@ -230,32 +236,43 @@ public class Universe {
 			this.velocity = new ArrayRealVector(dimension);
 		}
 
-		private void currentMass() {// 粒子当前质量
-			this.mass = (fitness - worstFitness) / (bestFitness - worstFitness);
-		}
-
-		private void currentInertiaMass() {// 当前惯性质量
-			double im = mass / totalMass;
-			this.inertiaMass = im == 0 ? A_SMALL_DOUBLE : im;
-		}
-
 		private void judgeFitness() {// 粒子当前适应度
 			this.fitness = law.judgeFitness(cordinate.toArray());
 		}
 
-		private void acceleration() {// 求加速度
+		private void currentMass() {// 粒子当前质量
+			this.mass = (fitness - worstFitness) / (bestFitness - worstFitness);
+		}
+
+		protected void currentInertiaMass() {// 当前惯性质量
+			double im = mass / totalMass;
+			this.inertiaMass = im == 0 ? A_SMALL_DOUBLE : im;
+		}
+
+		protected void acceleration() {// 求加速度
 			this.acceleration = totalForce().mapDivide(inertiaMass);
 		}
 
-		private void move() {// 在其他粒子的合力作用下移向下个坐标
+		private RealVector totalForce() {// 合力
+			RealVector vector = new ArrayRealVector(dimension);
+			for (int i = 0; i < kbest; ++i) {
+				Particle particle = particles.get(i);
+				if (particle != this) {
+					vector = vector.add(this.forceFrom(particle).ebeMultiply(generateRandomVector(dimension)));
+				}
+			}
+			return vector;
+		}
+
+		private RealVector forceFrom(Particle particle) {// 分力
+			return particle.cordinate.subtract(cordinate).mapMultiply(gravityConstant * inertiaMass
+					* particle.inertiaMass / (cordinate.getDistance(particle.cordinate) + A_SMALL_DOUBLE));
+		}
+
+		protected void move() {// 在其他粒子的合力作用下移向下个坐标
 			RealVector rv = cordinate.add(nextVelocity());
 			for (int i = 0; i < dimension; ++i) {
 				rv.setEntry(i, spaces.get(i).checkRange(rv.getEntry(i)));
-			}
-			if (((double) age) / lifeSpan > 0.9) {
-				if (law.judgeFitness(rv.toArray()) < bestFitness) {
-					return;
-				}
 			}
 			cordinate = rv;
 		}
@@ -266,6 +283,7 @@ public class Universe {
 			return velocity;
 		}
 
+<<<<<<< HEAD:Simulation/src/main/java/hust/hx/algorithm/gsa/Universe.java
 		private RealVector totalForce() {// 合力
 			RealVector vector = new ArrayRealVector(dimension);
 			Random rand = new Random();
@@ -288,6 +306,16 @@ public class Universe {
 		@Override
 		public int compareTo(Particle o) {// 以适应度作为比较标准
 			return Double.compare(fitness, o.fitness);
+=======
+		@Override
+		public int compareTo(Particle o) {// 以适应度作为比较标准
+			int result = Double.compare(fitness, o.fitness);
+			if (mode == Mode.BIG_BETTER) {
+				return result;
+			} else {
+				return -1 * result;
+			}
+>>>>>>> cebaa371b485f431df8011b07c9769427803ee77:Simulation/src/main/java/hust/hx/algorithm/gsa/ClassicGSA.java
 		}
 	}
 
@@ -299,11 +327,14 @@ public class Universe {
 
 		public Range(double low, double high) {
 			if (low > high) {
-				throw new IllegalArgumentException(
-						"low must be less than or equal high");
+				throw new IllegalArgumentException("low must be less than or equal high");
 			}
 			this.low = low;
 			this.high = high;
+		}
+
+		public static Range of(double low, double high) {
+			return new Range(low, high);
 		}
 
 		public double checkRange(double currentValue) {
@@ -342,15 +373,21 @@ public class Universe {
 	}
 
 	public static void main(String[] args) {// 计算根号3。
-		Universe u = new Universe(new NaturalLaw() {
+		ClassicGSA u = new ClassicGSA(new NaturalLaw() {
 			@Override
 			public double judgeFitness(double[] cordinate) {
 				double d = cordinate[0];
+<<<<<<< HEAD:Simulation/src/main/java/hust/hx/algorithm/gsa/Universe.java
 				return 1 / Math.abs((d * d - 3));
 			}
 		}, new Range(1, 2));
 		u.configue(1000, 3, 10, 20);
 		u.setMode(Mode.BIG_BETTER);
+=======
+				return Math.abs((d * d - 3));
+			}
+		}, new Range(1, 2));
+>>>>>>> cebaa371b485f431df8011b07c9769427803ee77:Simulation/src/main/java/hust/hx/algorithm/gsa/ClassicGSA.java
 		u.rockAndRoll();
 
 		System.out.println(u.bestOne());
