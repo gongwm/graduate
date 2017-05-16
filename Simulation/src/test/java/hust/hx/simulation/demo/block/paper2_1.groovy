@@ -19,7 +19,7 @@ def rs=new RegularSystem(0.8, 3.36, 0.2, 0.05)
 rs.simulate()
 def origin=rs.output
 
-def u=new WeighedGSA({cordinate->
+def u=new ClassicGSA({cordinate->
 	def td=cordinate[0]
 	def sys=new RegularSystem(0.8,td,0.2,0.05)
 	sys.simulate()

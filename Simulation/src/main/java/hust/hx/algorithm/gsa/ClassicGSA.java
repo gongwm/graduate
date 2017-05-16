@@ -29,15 +29,9 @@ public class ClassicGSA {
 	protected List<Particle> particles = new ArrayList<Particle>();;
 
 	private int lifeSpan = 1000;// 控制参数
-<<<<<<< HEAD:Simulation/src/main/java/hust/hx/algorithm/gsa/Universe.java
-	private double initialGravityConstant = 100;
-	private double agingRatio = 20.0;
-	private int creatureCount = 20;
-=======
 	private double initialGravityConstant = 100.0;
 	private double agingRatio = 20.0;
 	protected int creatureCount = 20;
->>>>>>> cebaa371b485f431df8011b07c9769427803ee77:Simulation/src/main/java/hust/hx/algorithm/gsa/ClassicGSA.java
 
 	private int age;// 全局变量
 	protected final int dimension;
@@ -59,16 +53,6 @@ public class ClassicGSA {
 
 	private int kbest = creatureCount;
 	private int finalPercent = 2;
-
-	private Mode mode = Mode.SMALL_BETTER;
-
-	enum Mode {
-		BIG_BETTER, SMALL_BETTER
-	}
-
-	public void setMode(Mode mode) {
-		this.mode = mode;
-	}
 
 	/**
 	 * 构造方法。
@@ -188,31 +172,6 @@ public class ClassicGSA {
 		double judgeFitness(double[] cordinate);
 	}
 
-<<<<<<< HEAD:Simulation/src/main/java/hust/hx/algorithm/gsa/Universe.java
-	private void agine() {// 宇宙老化一次
-		this.gravityConstant = initialGravityConstant
-				* Math.exp(-agingRatio * age / lifeSpan);
-	}
-
-	private void choose() {// 求最好适应度和最差适应度
-		if (mode == Mode.BIG_BETTER) {
-			this.bestFitness = Collections.max(particles).fitness;
-			this.worstFitness = Collections.min(particles).fitness;
-		} else if (mode == Mode.SMALL_BETTER) {
-			this.bestFitness = Collections.min(particles).fitness;
-			this.worstFitness = Collections.max(particles).fitness;
-		}
-	}
-
-	private void totalMass() {// 总质量
-		totalMass = 0;
-		for (Particle particle : particles) {
-			totalMass += particle.mass;
-		}
-	}
-
-=======
->>>>>>> cebaa371b485f431df8011b07c9769427803ee77:Simulation/src/main/java/hust/hx/algorithm/gsa/ClassicGSA.java
 	/**
 	 * 宇宙中唯一的东西：粒子。<br/>
 	 * 粒子的属性：坐标、速度、加速度、质量、惯性质量、适应度
@@ -283,30 +242,6 @@ public class ClassicGSA {
 			return velocity;
 		}
 
-<<<<<<< HEAD:Simulation/src/main/java/hust/hx/algorithm/gsa/Universe.java
-		private RealVector totalForce() {// 合力
-			RealVector vector = new ArrayRealVector(dimension);
-			Random rand = new Random();
-			for (Particle particle : particles) {
-				if (this != particle) {
-					vector = vector.add(this.forceFrom(particle)
-							.mapMultiply(rand.nextDouble()));
-				}
-			}
-			return vector;
-		}
-
-		private RealVector forceFrom(Particle particle) {// 分力
-			return particle.cordinate.subtract(cordinate).mapMultiply(
-					gravityConstant * inertiaMass * particle.inertiaMass
-							/ (cordinate.getDistance(particle.cordinate)
-									+ A_SMALL_DOUBLE));
-		}
-
-		@Override
-		public int compareTo(Particle o) {// 以适应度作为比较标准
-			return Double.compare(fitness, o.fitness);
-=======
 		@Override
 		public int compareTo(Particle o) {// 以适应度作为比较标准
 			int result = Double.compare(fitness, o.fitness);
@@ -315,7 +250,6 @@ public class ClassicGSA {
 			} else {
 				return -1 * result;
 			}
->>>>>>> cebaa371b485f431df8011b07c9769427803ee77:Simulation/src/main/java/hust/hx/algorithm/gsa/ClassicGSA.java
 		}
 	}
 
@@ -377,17 +311,9 @@ public class ClassicGSA {
 			@Override
 			public double judgeFitness(double[] cordinate) {
 				double d = cordinate[0];
-<<<<<<< HEAD:Simulation/src/main/java/hust/hx/algorithm/gsa/Universe.java
-				return 1 / Math.abs((d * d - 3));
-			}
-		}, new Range(1, 2));
-		u.configue(1000, 3, 10, 20);
-		u.setMode(Mode.BIG_BETTER);
-=======
 				return Math.abs((d * d - 3));
 			}
 		}, new Range(1, 2));
->>>>>>> cebaa371b485f431df8011b07c9769427803ee77:Simulation/src/main/java/hust/hx/algorithm/gsa/ClassicGSA.java
 		u.rockAndRoll();
 
 		System.out.println(u.bestOne());

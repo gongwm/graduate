@@ -4,21 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import hust.hx.simulation.demo.block.Amplifier;
-import hust.hx.simulation.demo.block.Block;
-import hust.hx.simulation.demo.block.Config;
-import hust.hx.simulation.demo.block.Inertia;
-import hust.hx.simulation.demo.block.Adder;
-import hust.hx.simulation.demo.block.Limiter;
-import hust.hx.simulation.demo.block.Line;
-import hust.hx.simulation.demo.block.Source;
-import hust.hx.simulation.demo.block.StepSource;
 import hust.hx.simulation.util.PrintUtil;
 import hust.hx.util.TestUtil;
 
 public class ExciterTest {
 	public static void main(String[] args) {
-		Config config = Config.DEFAULT_CONFIG;
+		Config config = Config.of(0.001, 10);
 
 		Source stepSource = new StepSource();
 		Adder j1 = new Adder();
@@ -50,17 +41,13 @@ public class ExciterTest {
 		List<Double> out = new ArrayList<>();
 		out.add(b5.getCurrent());
 
-		List<Line> lines = Arrays.asList(l1, l2, l3, l4, l5, l6, l7, l8, l9,
-				l10);
-		List<Block> blocks = Arrays.asList(stepSource, j1, b1, b2, j2, b3, b4,
-				b5, b6);
+		List<Line> lines = Arrays.asList(l1, l2, l3, l4, l5, l6, l7, l8, l9, l10);
+		List<Block> blocks = Arrays.asList(stepSource, j1, b1, b2, j2, b3, b4, b5, b6);
 
 		TestUtil.timeIt(() -> {
 			config.iterate(() -> {
 				lines.forEach(l -> l.push());
-
 				blocks.forEach(b -> b.moveOn());
-
 				out.add(b5.getNext());
 			});
 		});

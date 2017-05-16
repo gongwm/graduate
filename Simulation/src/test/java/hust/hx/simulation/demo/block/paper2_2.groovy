@@ -44,7 +44,7 @@ TestUtil.timeIt{ u.rockAndRoll(); }
 System.out.println(u.bestOne());
 System.out.println("fitness: " + u.bestFitness());
 
-def best=u.bestOne().toArray()
+def best=u.bestOne()
 def rsys=new RegularSystem(best[0],best[1],0.2,0.05)
 rsys.simulate()
 def time=rsys.time

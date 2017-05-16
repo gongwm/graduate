@@ -103,8 +103,8 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>execute</goal>
 							<goal>compile</goal>
+							<goal>execute</goal>
 						</goals>
 					</execution>
 				</executions>
