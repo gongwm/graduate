@@ -9,7 +9,7 @@ import hust.hx.util.TestUtil;
 
 public class ExciterTest {
 	public static void main(String[] args) {
-		Config config = Config.of(0.001, 10);
+		Config config = Config.DEFAULT_CONFIG;
 
 		Source stepSource = new StepSource();
 		Adder j1 = new Adder();
