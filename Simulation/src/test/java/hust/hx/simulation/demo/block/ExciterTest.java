@@ -9,17 +9,22 @@ import hust.hx.util.TestUtil;
 
 public class ExciterTest {
 	public static void main(String[] args) {
-		Config config = Config.DEFAULT_CONFIG;
+		Config config = Config.of(0.001, 10);
 
 		Source stepSource = new StepSource();
 		Adder j1 = new Adder();
-		Block b1 = new Inertia(40, 0.1);
+		Inertia b1 = new Inertia(40, 0.1);
 		Block b2 = new Limiter(30);
 		Adder j2 = new Adder();
-		Block b3 = new Inertia(-20, -10);
+		Inertia b3 = new Inertia(-20, -10);
 		Block b4 = new Amplifier(0.01);
-		Block b5 = new Inertia(1, 1);
-		Block b6 = new Inertia(0.05, 0.05);
+		Inertia b5 = new Inertia(1, 1);
+		Inertia b6 = new Inertia(0.05, 0.05);
+
+		b1.setConfig(config);
+		b3.setConfig(config);
+		b5.setConfig(config);
+		b6.setConfig(config);
 
 		Line l1 = new Line(stepSource, j1);
 		Line l2 = new Line(j1, b1);
