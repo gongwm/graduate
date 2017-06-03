@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import hust.hx.algorithm.gsa.ClassicGSA;
 import hust.hx.algorithm.gsa.ClassicGSA.Range;
+import hust.hx.util.TestUtil;
 
 public class Paper2_3Java {
 	static double fitness(List<Double> origin, List<Double> output) {
@@ -61,7 +62,7 @@ public class Paper2_3Java {
 		}, Arrays.asList(Range.of(0.001, 1), Range.of(0.001, 5), Range.of(0.001, 1)));
 
 		u.configure(1000, 50);
-		u.rockAndRoll();
+		TestUtil.timeIt(() -> u.rockAndRoll());
 
 		try {
 			es.awaitTermination(1, TimeUnit.SECONDS);

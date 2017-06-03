@@ -27,7 +27,7 @@ def btRange=GsaRange.of(0.001, 1)
 def tdRange=GsaRange.of(0.001, 5)
 def tyRange=GsaRange.of(0.001, 1)
 def tiRange=GsaRange.of(0.001, 1)
-ClassicGSA u=new ClassicGSA({cordinate->
+def u=new ClassicGSA({cordinate->
 	def bt=cordinate[0]
 	def td=cordinate[1]
 	def ty=cordinate[2]
@@ -37,14 +37,14 @@ ClassicGSA u=new ClassicGSA({cordinate->
 	def f=fitness(origin,output)
 	return f
 },btRange,tdRange,tyRange)
-u.configure(1000,20)
+u.configure(1000,50)
 TestUtil.timeIt{ u.rockAndRoll(); }
 
 
 System.out.println(u.bestOne());
 System.out.println("fitness: " + u.bestFitness());
 
-def best=u.bestOne().toArray()
+def best=u.bestOne()
 def rsys=new RegularSystem(best[0],best[1],best[2],0.05)
 rsys.simulate()
 def time=rsys.time
